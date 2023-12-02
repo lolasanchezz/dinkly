@@ -1,0 +1,22 @@
+
+
+
+.floatchild {
+    width: 50%;
+    float: left;
+    padding: 20px;
+    border: 2px solid red;
+}
+
+
+.float-container{
+    border: 3px solid #fff;
+    padding: 20px;
+}
+#moneysign{
+    width:100%;
+    float:left;
+}
+#logo{
+    float:right;
+}
