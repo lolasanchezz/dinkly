@@ -4,16 +4,17 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
 </head>
 <body>
-        <div class="float-container">
-       <div>
-        <img id = "logo" class = "floatchild" src = "assets/Artboard 1.png"></img>
-        </div>
+    <div style = "position: relative; top: 50%; left: 40%; "   >
+       
+       
+        <img style = "position: relative; top: 0; left: 0; z-index: 1; width: 30% " id = "logo" src = "assets/Artboard 1.png"></img>
         
         
-        <div id="moneySign" class = "floatchild">
-            <model-viewer src="assets/Asset 4.gltf" camera-controls touch-action="pan-y"></model-viewer>
+        
+        
+            <model-viewer style = " position: absolute; top: 10%; left: 14%; z-index: 2; height: 70%; transform: rotate(-20deg); touch-action: pan-x;" src="assets/Asset 4.gltf"  ></model-viewer>
 
-         </div>
+     
 </div>
 
 </body>
