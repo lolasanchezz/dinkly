@@ -4,6 +4,10 @@
     position: relative;
     height:20%;
 }
+
+
+
+
 @font-face {
     font-family: "NotCourierSans";
     src: url(assets/fonts/NotCourierSans.otf);
@@ -16,9 +20,11 @@
   }   
   @font-face {
     font-family: "Goozette";
-    src: url(assets/fonts/Goozette.otf)
+    src: url(assets/fonts/Goozette.otf);
   }
   @font-face{
     font-family: "supah";
-    src: url(assets/fonts/SuperNotoriousTordue.otf)
+    src: url(assets/fonts/SuperNotoriousTordue.otf);
   }
+
+  

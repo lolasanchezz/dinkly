@@ -1,0 +1,25 @@
+body {
+margin: 0;
+display: flex;
+height: 100vh;
+}
+
+#canvasContainer {
+    position:relative;
+    background-color: gray;
+    flex:1 1 70%;
+    margin: 10px 10px 10px 40px;
+}
+.flex-container {
+    display: flex;
+    flex:1;
+    background-color: white;
+}
+#buttons {
+    background-color:black;
+    flex:1 1 30%;
+}
+.konvaStage {
+    border-width: 10px;
+    border-color: white;
+}

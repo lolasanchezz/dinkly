@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <body>
-            <canvas id="canvas-demo" width="400" height="400">
-                This will be displayed if your browser doesn't
-                support the canvas element. The closing tag is
-                necessary.
-           </canvas>
-           <script src="demandAndSupplyJS.js"></script>
-        </body>
+    <head> 
+         <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+         <link rel="stylesheet" href="demandAndSupply.css">
     </head>
+        <body onresize="fitSceneIntoDiv()">
+            <div class = "flex-container">
+            <div id="canvasContainer"></div>
+            <div id="buttons"></div>
+            </div>
+            <script src="demandAndSupplyJS.js" ></script> 
+        </body>
 </html>
