@@ -6,8 +6,9 @@ height: 100vh;
 
 #canvasContainer {
     position:relative;
-    background-color: gray;
+    background-color: white;
     flex:1 1 70%;
+    z-index: 1;
     margin: 10px 10px 10px 40px;
 }
 .flex-container {
@@ -19,7 +20,9 @@ height: 100vh;
     background-color:black;
     flex:1 1 30%;
 }
-.konvaStage {
-    border-width: 10px;
-    border-color: white;
+.konvajs-content {
+    /*background-color: #d6d6d6;*/
+    position:absolute;
+    margin: auto;
+    margin-top: 5%
 }
