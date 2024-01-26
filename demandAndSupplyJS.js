@@ -40,8 +40,30 @@ function checkDivHeightAndWidth() {
     backgroundRectangleCanvas.style.height = stage.height();
   }
 }
+function generateRectLesson(widthOfText, heightOfText) {
+  if (xPos > scene.width / 2()) {
+    return new Konva.Rect({
+      x: xPos - widthOfText,
+      y: yPos,
+      fill: "#dae6d8",
+      width: widthOfText,
+      height: heightOfText,
+      stroke: "#cccccc",
+      strokeWidth: 0.5,
+    });
+  }
+  return new Konva.Rect({
+    x: xPos,
+    y: yPos,
+    fill: "#dae6d8",
+    width: widthOfText,
+    height: heightOfText,
+    stroke: "#cccccc",
+    strokeWidth: 0.5,
+  });
+}
+
 function generateRect() {
-  
   return new Konva.Rect({
     x: xPos,
     y: yPos,
@@ -51,10 +73,76 @@ function generateRect() {
     stroke: "#cccccc",
     strokeWidth: 0.5,
   });
+}
+
+function generatePointsAsCoords() {
+  return new Konva.Ellipse({
+    x: xPos,
+    y: yPos,
+    radius: 3,
+    id: "coordEllipse",
+    visible: false,
+    fill: "black",
+    listening: true
+  });
   
 }
 
-window.addEventListener("resize", checkDivHeightAndWidth);
+function createRectPointsForCoords() {
+  if (xPos > stage.width() / 2) {
+    return new Konva.Rect({
+      x: xPos - 5,
+      y: yPos,
+      fill: "#dae6d8",
+      width: 5,
+      height: 5,
+      stroke: "#cccccc",
+      strokeWidth: 0.5,
+      visible: false,
+      id: "coordRect" ,
+      listening: true
+    });
+  }
+  return new Konva.Rect({
+    x: xPos,
+    y: yPos,
+    fill: "#dae6d8",
+    width: 5,
+    height: 5,
+    stroke: "#cccccc",
+    strokeWidth: 0.5,
+    visible: false,
+    id: "coordRect" + String(xPos) + String(yPos),
+    listening: true
+  });
+}
+function showEllipseAndRect(rectID, dotCoordID) {
+  console.log(rectID);
+  console.log(dotCoordID);
+  
+  dotCoordID.visible = true;
+  rectID.visible = true;
+
+
+}
+
+function pluggingInCoordIDS() {
+  
+  var rectArray = stage.find("#coordRect");
+  var ellipseArray = stage.find("#coordEllipse");
+  
+ for (var county = 0; county<= 5; county++){
+ var currentRect = rectArray[county];
+ var currentEllipse = ellipseArray[county];
+ console.log(currentRect);
+ console.log(currentEllipse);
+ 
+ 
+  currentEllipse.on('pointerenter', showEllipseAndRect(currentRect, currentEllipse))
+
+
+ }
+}
 
 var supLine = new Konva.Line({
   points: [0, 0, stage.width(), stage.height()],
@@ -83,7 +171,6 @@ stage.add(backgroundLayer);
 stage.add(demAndSupLinesLayer);
 console.log("hii");
 
-
 var squareWidth = 20;
 var xPos = 0;
 var yPos = 0;
@@ -92,14 +179,60 @@ var yPos = 0;
 
 
 
+// no functions below here!!!!!!!!  =^.  ̫.^=  --  >w<
+
+
+
+
+function generatingShapesWhileLoop(){
+  xPos = 0;
+  yPos = 0;
 while (yPos <= stage.height() - squareWidth) {
-  xPos = 0; // Reset xPos at the beginning of each row
+  xPos = 0;
   while (xPos <= stage.width() - squareWidth) {
     backgroundLayer.add(generateRect());
-   xPos = xPos + squareWidth;
+    backgroundLayer.add(generatePointsAsCoords());
+    
+    xPos = xPos + squareWidth;
+    //console.log('printed points at' + xPos + ',' + yPos);
   }
+  yPos = yPos + squareWidth;
+}
+stage.add(backgroundLayer);
+xPos = 0;
+
+while (yPos <= stage.height()) {
+  xPos = 0;
+  while (xPos <= stage.width()) {
+    backgroundLayer.add(generatePointsAsCoords());
+    backgroundLayer.add(createRectPointsForCoords());
+    //console.log('printed points at' + xPos + ',' + yPos);
+
+    xPos = xPos + squareWidth;
+  }
+  yPos = yPos + squareWidth;
+}
+xPos = stage.width();
+yPos = 0;
+console.log(stage.height());
+while (yPos <= stage.height()) {
+  backgroundLayer.add(generatePointsAsCoords());
+  
+  backgroundLayer.add(createRectPointsForCoords());
+//console.log('printed points at' + xPos + ',' + yPos);
   yPos = yPos + squareWidth;
 }
 stage.add(backgroundLayer);
 
 
+}
+
+ 
+generatingShapesWhileLoop();
+
+var testRect = stage.find("#coordRect");
+
+console.log(testRect);
+
+window.addEventListener("resize", checkDivHeightAndWidth);
+pluggingInCoordIDS();
