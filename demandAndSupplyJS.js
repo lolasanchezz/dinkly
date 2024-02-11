@@ -4,6 +4,7 @@ var scaleX = 1;
 var scaleY = 1;
 var firstTime = true;
 console.log(firstTime);
+var squareWidth = 20;
 
 var stage = new Konva.Stage({
   container: "canvasContainer", // id of container <div>
@@ -173,7 +174,7 @@ stage.add(backgroundLayer);
 stage.add(demAndSupLinesLayer);
 console.log("hii");
 
-var squareWidth = 5;
+
 var xPos = 0;
 var yPos = 0;
 function generatingShapesWhileLoop() {
@@ -241,8 +242,8 @@ var originalXDemRight = demLine.points()[2];
 const supLineAnchorLeft = new Konva.Circle({
   x:supLine.points()[0],
   y: leftSupLinePoint,
-  radius: 10,
-  fill: 'blue',
+  radius: 50,
+  //fill: 'blue',
   draggable: true
 })
 
@@ -251,8 +252,8 @@ demAndSupLinesLayer.add(supLineAnchorLeft);
 const supLineAnchorRight = new Konva.Circle({
   x: supLine.points()[2],
   y: rightSupLinePoint,
-  radius: 10,
-  fill: 'blue',
+  radius: 50,
+  //fill: 'blue',
   draggable: true
 })
 demAndSupLinesLayer.add(supLineAnchorRight);
@@ -262,8 +263,8 @@ console.log(rightSupLinePoint+ "is y (right anchor on supline) and x is" + supLi
 const demLineAnchorLeft = new Konva.Circle({
   x:demLine.points()[0],
   y: leftDemLinePoint,
-  radius: 10,
-  fill: 'red',
+  radius: 50,
+  //fill: 'red',
   draggable: true
 })
 
@@ -272,8 +273,8 @@ demAndSupLinesLayer.add(demLineAnchorLeft);
 const demLineAnchorRight = new Konva.Circle({
   x: demLine.points()[2],
   y: rightDemLinePoint,
-  radius: 10,
-  fill: 'red',
+  radius: 50,
+  //fill: 'red',
   draggable: true
 })
 demAndSupLinesLayer.add(demLineAnchorRight);
@@ -321,35 +322,37 @@ line.points(points);
 if (isSupLine){
   originalXSupLeft = line.points()[0];
   originalXSupRight = line.points()[2];
+  var maxLeftX = 0;
 } else {
   originalXDemLeft = line.points()[0];
   originalXDemRight = line.points()[2];
+  var maxLeftX = stage.width();
 }
 demAndSupLinesLayer.batchDraw();
 
  } else {
-  /*
+  
   if (isSupLine == true){
-    //dotName1.y(leftLinePoint);
-    //dotName2.y(rightLinePoint);
+    dotName1.y(leftLinePoint);
+    dotName2.y(rightLinePoint);
     const points = {
       originalXSupLeft,
       leftLinePoint,
       originalXSupRight,
       rightLinePoint,
     }
-    line.points(points);
+    //line.points(points);
   } else {
-    //dotName1.y(leftLinePoint);
-    //dotName2.y(rightLinePoint);
+    dotName1.y(leftLinePoint);
+    dotName2.y(rightLinePoint);
     const points = {
       originalXDemLeft,
       leftLinePoint,
       originalXDemRight,
     }
-    line.points(points);
+    //line.points(points);
   }
-  */
+  
  }
  
  }
