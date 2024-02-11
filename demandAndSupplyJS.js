@@ -14,6 +14,7 @@ var stage = new Konva.Stage({
 var demAndSupLinesLayer = new Konva.Layer();
 var backgroundLayer = new Konva.Layer();
 
+
 function fitSceneIntoDiv() {
   var container = document.getElementById("canvasContainer");
   var containerWidth = container.offsetWidth;
@@ -72,20 +73,21 @@ function generateRect() {
     height: squareWidth,
     stroke: "#cccccc",
     strokeWidth: 0.5,
+    
   });
 }
 
 function generatePointsAsCoords() {
+  console.log("i think soething is ahppenign")
   return new Konva.Ellipse({
     x: xPos,
     y: yPos,
     radius: 3,
     id: "coordEllipse",
-    visible: false,
+    visible: true,
     fill: "black",
-    listening: true
+    listening: true,
   });
-  
 }
 
 function createRectPointsForCoords() {
@@ -99,8 +101,8 @@ function createRectPointsForCoords() {
       stroke: "#cccccc",
       strokeWidth: 0.5,
       visible: false,
-      id: "coordRect" ,
-      listening: true
+      id: "coordRect",
+      listening: true,
     });
   }
   return new Konva.Rect({
@@ -113,35 +115,35 @@ function createRectPointsForCoords() {
     strokeWidth: 0.5,
     visible: false,
     id: "coordRect" + String(xPos) + String(yPos),
-    listening: true
+    listening: true,
   });
 }
 function showEllipseAndRect(rectID, dotCoordID) {
   console.log(rectID);
   console.log(dotCoordID);
-  
-  dotCoordID.visible = true;
-  rectID.visible = true;
 
-
+  dotCoordID.visible(true);
+  rectID.visible(true);
 }
 
+
+
+
+
 function pluggingInCoordIDS() {
-  
   var rectArray = stage.find("#coordRect");
   var ellipseArray = stage.find("#coordEllipse");
-  
- for (var county = 0; county<= 5; county++){
- var currentRect = rectArray[county];
- var currentEllipse = ellipseArray[county];
- console.log(currentRect);
- console.log(currentEllipse);
- 
- 
-  currentEllipse.on('pointerenter', showEllipseAndRect(currentRect, currentEllipse))
 
+  for (var county = 0; county <= Math.min(rectArray.length, ellipseArray.length); county++) {
+    var currentRect = rectArray[county];
+    var currentEllipse = ellipseArray[county];
+    console.log(currentRect);
+    console.log(currentEllipse);
 
- }
+    currentEllipse.on("pointerenter", function () {
+      showEllipseAndRect(currentRect, currentEllipse);
+    });
+  }
 }
 
 var supLine = new Konva.Line({
@@ -171,63 +173,242 @@ stage.add(backgroundLayer);
 stage.add(demAndSupLinesLayer);
 console.log("hii");
 
-var squareWidth = 20;
+var squareWidth = 5;
 var xPos = 0;
 var yPos = 0;
+function generatingShapesWhileLoop() {
+  xPos = 0;
+  yPos = 0;
+  while (yPos <= stage.height() - squareWidth) {
+    xPos = 0;
+    while (xPos <= stage.width() - squareWidth) {
+      backgroundLayer.add(generateRect());
+      backgroundLayer.add(generatePointsAsCoords());
 
+      xPos = xPos + squareWidth;
+      //console.log('printed points at' + xPos + ',' + yPos);
+    }
+    yPos = yPos + squareWidth;
+  }
+  stage.add(backgroundLayer);
+  xPos = 0;
 
+  while (yPos <= stage.height()) {
+    xPos = 0;
+    while (xPos <= stage.width()) {
+      backgroundLayer.add(generatePointsAsCoords());
+      backgroundLayer.add(createRectPointsForCoords());
+      //console.log('printed points at' + xPos + ',' + yPos);
 
+      xPos = xPos + squareWidth;
+    }
+    yPos = yPos + squareWidth;
+  }
+  xPos = stage.width();
+  yPos = 0;
+  console.log(stage.height());
+  while (yPos <= stage.height()) {
+    backgroundLayer.add(generatePointsAsCoords());
 
+    backgroundLayer.add(createRectPointsForCoords());
+    //console.log('printed points at' + xPos + ',' + yPos);
+    yPos = yPos + squareWidth;
+  }
+  stage.add(backgroundLayer);
+}
 
 // no functions below here!!!!!!!!  =^.  ̫.^=  --  >w<
 
 
 
+///interactive lines !!!!!!!!!!!!!!!
 
-function generatingShapesWhileLoop(){
-  xPos = 0;
-  yPos = 0;
-while (yPos <= stage.height() - squareWidth) {
-  xPos = 0;
-  while (xPos <= stage.width() - squareWidth) {
-    backgroundLayer.add(generateRect());
-    backgroundLayer.add(generatePointsAsCoords());
-    
-    xPos = xPos + squareWidth;
-    //console.log('printed points at' + xPos + ',' + yPos);
-  }
-  yPos = yPos + squareWidth;
-}
-stage.add(backgroundLayer);
-xPos = 0;
-
-while (yPos <= stage.height()) {
-  xPos = 0;
-  while (xPos <= stage.width()) {
-    backgroundLayer.add(generatePointsAsCoords());
-    backgroundLayer.add(createRectPointsForCoords());
-    //console.log('printed points at' + xPos + ',' + yPos);
-
-    xPos = xPos + squareWidth;
-  }
-  yPos = yPos + squareWidth;
-}
-xPos = stage.width();
-yPos = 0;
-console.log(stage.height());
-while (yPos <= stage.height()) {
-  backgroundLayer.add(generatePointsAsCoords());
-  
-  backgroundLayer.add(createRectPointsForCoords());
-//console.log('printed points at' + xPos + ',' + yPos);
-  yPos = yPos + squareWidth;
-}
-stage.add(backgroundLayer);
+var rightSupLinePoint = supLine.points()[3]
+var rightDemLinePoint = demLine.points()[3];
+var leftDemLinePoint = demLine.points()[1];
+var leftSupLinePoint = supLine.points()[1];
 
 
-}
 
+var originalXSupLeft = supLine.points()[0];
+var originalXSupRight = supLine.points()[2];
+var originalXDemLeft = demLine.points()[0];
+var originalXDemRight = demLine.points()[2];
+
+
+
+  console.log(leftSupLinePoint+ "is y (left anchor on supline) and x is" + supLine.points()[0]);
+const supLineAnchorLeft = new Konva.Circle({
+  x:supLine.points()[0],
+  y: leftSupLinePoint,
+  radius: 10,
+  fill: 'blue',
+  draggable: true
+})
+
+demAndSupLinesLayer.add(supLineAnchorLeft);
+
+const supLineAnchorRight = new Konva.Circle({
+  x: supLine.points()[2],
+  y: rightSupLinePoint,
+  radius: 10,
+  fill: 'blue',
+  draggable: true
+})
+demAndSupLinesLayer.add(supLineAnchorRight);
+console.log(rightSupLinePoint+ "is y (right anchor on supline) and x is" + supLine.points()[2]);
+//demand line
+
+const demLineAnchorLeft = new Konva.Circle({
+  x:demLine.points()[0],
+  y: leftDemLinePoint,
+  radius: 10,
+  fill: 'red',
+  draggable: true
+})
+
+demAndSupLinesLayer.add(demLineAnchorLeft);
+
+const demLineAnchorRight = new Konva.Circle({
+  x: demLine.points()[2],
+  y: rightDemLinePoint,
+  radius: 10,
+  fill: 'red',
+  draggable: true
+})
+demAndSupLinesLayer.add(demLineAnchorRight);
+
+var isSupLine;
+function moveBothLines(line, dotName1, dotName2){
+  console.log(dotName1.getRelativePointerPosition().x);
+  if ((dotName1.getRelativePointerPosition().x == null) || (dotName1.getRelativePointerPosition().y == null)){
+    return;
+   }
+   if (line === supLine){
+    var leftLinePoint = leftSupLinePoint;
+    var rightLinePoint = rightSupLinePoint;
+    var originalXpointLeft = originalXSupLeft;
+    var originalXpointRight = originalXSupRight;
+    isSupLine = true;
+   } else if (line === demLine){
+    var leftLinePoint = leftDemLinePoint;
+    var rightLinePoint = rightDemLinePoint;
+    var originalXpointLeft = originalXDemLeft;
+    var originalXpointRight = originalXDemRight;
+   }
+ var mousePos1 = dotName1.getRelativePointerPosition().x;
+ var mousePos2 = dotName2.getRelativePointerPosition().x;
+ var mouseXrelPoint1 = originalXpointLeft - mousePos1;
+ var mouseXrelPoint2 = originalXpointRight - mousePos2;
+ console.log(mouseXrelPoint2);
+ console.log(mouseXrelPoint1);
  
+
+
+
+
+ if ((Math.abs(mouseXrelPoint1%squareWidth) <1)|| ((Math.abs(mouseXrelPoint2%squareWidth)) <1)){
+  console.log("far enough");
+ dotName1.y(leftLinePoint);
+ dotName2.y(rightLinePoint);
+ const points = [
+  dotName1.x(),
+  leftLinePoint,
+  dotName2.x(),
+  rightLinePoint,
+ ]
+line.points(points);
+if (isSupLine){
+  originalXSupLeft = line.points()[0];
+  originalXSupRight = line.points()[2];
+} else {
+  originalXDemLeft = line.points()[0];
+  originalXDemRight = line.points()[2];
+}
+demAndSupLinesLayer.batchDraw();
+
+ } else {
+  /*
+  if (isSupLine == true){
+    //dotName1.y(leftLinePoint);
+    //dotName2.y(rightLinePoint);
+    const points = {
+      originalXSupLeft,
+      leftLinePoint,
+      originalXSupRight,
+      rightLinePoint,
+    }
+    line.points(points);
+  } else {
+    //dotName1.y(leftLinePoint);
+    //dotName2.y(rightLinePoint);
+    const points = {
+      originalXDemLeft,
+      leftLinePoint,
+      originalXDemRight,
+    }
+    line.points(points);
+  }
+  */
+ }
+ 
+ }
+ 
+function resetAnchor(anchor1, anchor2, line){
+  anchor1.x(line.points()[0]);
+  anchor2.x(line.points()[2]);
+  anchor1.y(line.points()[1]);
+  anchor2.y(line.points()[3])
+}
+stage.add(demAndSupLinesLayer);
+stage.draw();
+//demLineFunction
+
+demLineAnchorLeft.on('dragmove', function () {
+  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
+});
+
+demLineAnchorRight.on('dragmove', function () {
+  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
+});
+
+supLineAnchorLeft.on('dragmove', function () {
+  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
+});
+
+supLineAnchorRight.on('dragmove', function () {
+  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
+});
+
+demLineAnchorLeft.on('dragend', function () {
+  resetAnchor(demLineAnchorLeft, demLineAnchorRight, demLine);
+});
+demLineAnchorRight.on('dragend', function () {
+  resetAnchor(demLineAnchorLeft, demLineAnchorRight, demLine);
+});
+
+supLineAnchorLeft.on('dragend', function () {
+  resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
+});
+
+supLineAnchorRight.on('dragend', function () {
+  resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 generatingShapesWhileLoop();
 
 var testRect = stage.find("#coordRect");
@@ -235,4 +416,5 @@ var testRect = stage.find("#coordRect");
 console.log(testRect);
 
 window.addEventListener("resize", checkDivHeightAndWidth);
-pluggingInCoordIDS();
+//pluggingInCoordIDS();
+backgroundLayer.draw();
