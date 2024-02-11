@@ -4,7 +4,7 @@ var scaleX = 1;
 var scaleY = 1;
 var firstTime = true;
 console.log(firstTime);
-var squareWidth = 20;
+var squareWidth = 10;
 
 var stage = new Konva.Stage({
   container: "canvasContainer", // id of container <div>
@@ -281,7 +281,7 @@ demAndSupLinesLayer.add(demLineAnchorRight);
 
 var isSupLine;
 function moveBothLines(line, dotName1, dotName2){
-  console.log(dotName1.getRelativePointerPosition().x);
+  //console.log(dotName1.getRelativePointerPosition().x);
   if ((dotName1.getRelativePointerPosition().x == null) || (dotName1.getRelativePointerPosition().y == null)){
     return;
    }
@@ -301,8 +301,8 @@ function moveBothLines(line, dotName1, dotName2){
  var mousePos2 = dotName2.getRelativePointerPosition().x;
  var mouseXrelPoint1 = originalXpointLeft - mousePos1;
  var mouseXrelPoint2 = originalXpointRight - mousePos2;
- console.log(mouseXrelPoint2);
- console.log(mouseXrelPoint1);
+ //console.log(mouseXrelPoint2);
+ //console.log(mouseXrelPoint1);
  
 
 
@@ -310,8 +310,8 @@ function moveBothLines(line, dotName1, dotName2){
 
  if ((Math.abs(mouseXrelPoint1%squareWidth) <1)|| ((Math.abs(mouseXrelPoint2%squareWidth)) <1)){
   console.log("far enough");
- dotName1.y(leftLinePoint);
- dotName2.y(rightLinePoint);
+ //dotName1.y(leftLinePoint);
+ //dotName2.y(rightLinePoint);
  const points = [
   dotName1.x(),
   leftLinePoint,
@@ -369,38 +369,78 @@ stage.draw();
 
 demLineAnchorLeft.on('dragmove', function () {
   moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
+  remapEquilibrium();
 });
 
 demLineAnchorRight.on('dragmove', function () {
   moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
+  remapEquilibrium();
 });
 
 supLineAnchorLeft.on('dragmove', function () {
   moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
+  remapEquilibrium();
 });
 
 supLineAnchorRight.on('dragmove', function () {
   moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
+  remapEquilibrium();
 });
 
 demLineAnchorLeft.on('dragend', function () {
   resetAnchor(demLineAnchorLeft, demLineAnchorRight, demLine);
+  //remapEquilibrium();
 });
 demLineAnchorRight.on('dragend', function () {
   resetAnchor(demLineAnchorLeft, demLineAnchorRight, demLine);
+  //remapEquilibrium();
 });
 
 supLineAnchorLeft.on('dragend', function () {
   resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
+  //remapEquilibrium();
 });
 
 supLineAnchorRight.on('dragend', function () {
   resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
+  //remapEquilibrium();
 });
 
 
+//find slope and equations relevant
+function findPoints(line, secondLine){
+  var x11 = line.points()[0];
+  var y11 = line.points()[1];
+  var x12 = line.points()[2];
+  var y12 = line.points()[3];
+  var sl1 = (y12 -y11)/(x12-x11);
+  var x21 = secondLine.points()[0];
+  var y21 = secondLine.points()[1];
+  var x22 = secondLine.points()[2];
+  var y22 = secondLine.points()[3];
+  var sl2 = (y22 - y21)/(x22 - x21);
+  var line1Yint = y11 - sl1*x11;
+  var line2Yint = y21 - sl2*x21;
+  if (sl1 == sl2){
+    var sharedXcoord = ((x11-x12)/2);
+    var sharedYcoord = ((y11 - y12)/2);
+    //console.log("equilibrium x:" +sharedXcoord + ",y:" + sharedYcoord);
+    return[sharedXcoord,sharedYcoord,sl1,sl2];
+  } else {
+  var sharedXcoord = ((line1Yint - line2Yint)/(sl2-sl1));
+  var sharedYcoord =sl1*sharedXcoord + line1Yint;
+  console.log("equilibrium x:" +sharedXcoord + ",y:" + sharedYcoord);
+  return[sharedXcoord,sharedYcoord,sl1,sl2];
+  }
+}
 
-
+function remapEquilibrium(){
+  var newX = findPoints(supLine, demLine)[0];
+  var newY = findPoints(supLine, demLine)[1];
+  //console.log("equilibrium x:" +newX + ",y:" + newY);
+  equilibrium.x(newX);
+  equilibrium.y(newY);
+}
 
 
 
