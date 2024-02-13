@@ -31,8 +31,7 @@ function checkDivHeightAndWidth() {
   var divWidth = parentCanvasDiv.offsetWidth;
   var divHeight = parentCanvasDiv.offsetHeight;
   if (divWidth <= 500 || divHeight <= 500) {
-    stage.width(fitSceneIntoDiv());
-    stage.height(fitSceneIntoDiv());
+    
     console.log(stage.width());
     console.log(stage.height());
     var backgroundRectangleCanvas = document.getElementById(
@@ -228,7 +227,10 @@ var rightSupLinePoint = supLine.points()[3]
 var rightDemLinePoint = demLine.points()[3];
 var leftDemLinePoint = demLine.points()[1];
 var leftSupLinePoint = supLine.points()[1];
-
+var lastDraggedLeftSupPoint;
+var lastDraggedLeftDemPoint;
+var lastDraggedRightSupPoint;
+var lastDraggedRightDemPoint;
 
 
 var originalXSupLeft = supLine.points()[0];
@@ -253,7 +255,7 @@ const supLineAnchorRight = new Konva.Circle({
   x: supLine.points()[2],
   y: rightSupLinePoint,
   radius: 50,
-  //fill: 'blue',
+  fill: 'blue',
   draggable: true
 })
 demAndSupLinesLayer.add(supLineAnchorRight);
@@ -280,7 +282,7 @@ const demLineAnchorRight = new Konva.Circle({
 demAndSupLinesLayer.add(demLineAnchorRight);
 
 var isSupLine;
-function moveBothLines(line, dotName1, dotName2){
+function moveBothLines(line, dotName1, dotName2, dotDragged){
   //console.log(dotName1.getRelativePointerPosition().x);
   if ((dotName1.getRelativePointerPosition().x == null) || (dotName1.getRelativePointerPosition().y == null)){
     return;
@@ -301,17 +303,41 @@ function moveBothLines(line, dotName1, dotName2){
  var mousePos2 = dotName2.getRelativePointerPosition().x;
  var mouseXrelPoint1 = originalXpointLeft - mousePos1;
  var mouseXrelPoint2 = originalXpointRight - mousePos2;
+ var YmousePos1 = dotName1.getRelativePointerPosition().x;
+ var YmousePos2 = dotName2.getRelativePointerPosition().x;
+ var mouseYrelPoint1 = leftLinePoint - YmousePos1;
+ var mouseYrelPoint2 = rightLinePoint - YmousePos2;
  //console.log(mouseXrelPoint2);
  //console.log(mouseXrelPoint1);
  
 
+if (supLine) {
+    //lastDraggedLeftSupPoint = lastLeftDraggedPoint;
+    //lastDraggedRightSupPoint = lastRightDraggedPoint;
+    lastLeftYDraggedPoint = lastDraggedYLeftSupPoint;
+    lastRightYDraggedPoint = lastDraggedYRightSupPoint;
+  } else {
+    lastLeftYDraggedPoint = lastDraggedYLeftDemPoint;
+    lastRightYDraggedPoint = lastDraggedYRightDemPoint;
+  }
 
 
 
- if ((Math.abs(mouseXrelPoint1%squareWidth) <1)|| ((Math.abs(mouseXrelPoint2%squareWidth)) <1)){
-  console.log("far enough");
- //dotName1.y(leftLinePoint);
- //dotName2.y(rightLinePoint);
+
+if (dotDragged == "right") {
+  
+if (line.points[2] > stage.width()){
+  if ((Math.abs(mouseYrelPoint1%squareWidth) <1)|| ((Math.abs(mouseYrelPoint2%squareWidth)) <1)){
+    line.points[3] = dotName2.y();
+    line.points[2] = stage.width();
+  var difference = Math.abs(dotName2.x() - (stage.width()+stage.width/50));
+  dotName2.radius() = dotName2.radius() + difference;
+  }
+
+} 
+if ((Math.abs(mouseXrelPoint1%squareWidth) <1)|| ((Math.abs(mouseXrelPoint2%squareWidth)) <1)){
+ 
+
  const points = [
   dotName1.x(),
   leftLinePoint,
@@ -354,36 +380,70 @@ demAndSupLinesLayer.batchDraw();
   }
   
  }
+var lastRightYDraggedPoint = line.points[2];
+} else if (dotDragged == "left") {
+
+  var lastLeftYDraggedPoint = line.points[3]
+}
+
+
+
+if (supLine) {
+  lastDraggedYLeftSupPoint = lastLeftYDraggedPoint;
+  lastDraggedYRightSupPoint = lastRightYDraggedPoint;
+} else {
+  lastDraggedYLeftDemPoint = lastLeftYDraggedPoint;
+  lastDraggedYRightDemPoint = lastRightYDraggedPoint;
+}
+
  
- }
+
+
+
+
  
 function resetAnchor(anchor1, anchor2, line){
   anchor1.x(line.points()[0]);
   anchor2.x(line.points()[2]);
   anchor1.y(line.points()[1]);
-  anchor2.y(line.points()[3])
+  anchor2.y(line.points()[3]);
+  console.log(anchor1.x());
+  console.log(anchor2.x());
+  //if (anchor2.x() > 500){
+    //anchor2.x(500);
+  //}
+  /*
+  if (line === supLine){
+  if(!(anchor1.x() =<0())){
+    anchor1.x(0);
+  }
+  if(!(anchor2.x() <stage.width())){
+    anchor2.x(stage.width);
+  }
+}
+*/
 }
 stage.add(demAndSupLinesLayer);
 stage.draw();
 //demLineFunction
 
 demLineAnchorLeft.on('dragmove', function () {
-  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
+  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight, "left");
   remapEquilibrium();
 });
 
 demLineAnchorRight.on('dragmove', function () {
-  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
+  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight, "right");
   remapEquilibrium();
 });
 
 supLineAnchorLeft.on('dragmove', function () {
-  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
+  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight, "left");
   remapEquilibrium();
 });
 
 supLineAnchorRight.on('dragmove', function () {
-  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
+  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight, "right");
   remapEquilibrium();
 });
 
@@ -429,7 +489,7 @@ function findPoints(line, secondLine){
   } else {
   var sharedXcoord = ((line1Yint - line2Yint)/(sl2-sl1));
   var sharedYcoord =sl1*sharedXcoord + line1Yint;
-  console.log("equilibrium x:" +sharedXcoord + ",y:" + sharedYcoord);
+  //console.log("equilibrium x:" +sharedXcoord + ",y:" + sharedYcoord);
   return[sharedXcoord,sharedYcoord,sl1,sl2];
   }
 }
@@ -454,9 +514,7 @@ function remapEquilibrium(){
 
 generatingShapesWhileLoop();
 
-var testRect = stage.find("#coordRect");
 
-console.log(testRect);
 
 window.addEventListener("resize", checkDivHeightAndWidth);
 //pluggingInCoordIDS();
