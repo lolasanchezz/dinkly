@@ -290,8 +290,13 @@ function moveOnX(line,dotName1,dotName2){
 
 var isSupLine;
 <<<<<<< HEAD
+<<<<<<< HEAD
 function moveBothLines(line, dotName1, dotName2, dotDragged){
   //console.log(dotName1.getRelativePointerPosition().x);
+=======
+function moveBothLines(line, dotName1, dotName2){
+  console.log(dotName1.getRelativePointerPosition().x);
+>>>>>>> parent of ebbb415 (equilibrium moves!!)
 =======
 function moveBothLines(line, dotName1, dotName2){
   console.log(dotName1.getRelativePointerPosition().x);
@@ -316,12 +321,17 @@ function moveBothLines(line, dotName1, dotName2){
  var mouseXrelPoint1 = originalXpointLeft - mousePos1;
  var mouseXrelPoint2 = originalXpointRight - mousePos2;
 <<<<<<< HEAD
+<<<<<<< HEAD
  var YmousePos1 = dotName1.getRelativePointerPosition().x;
  var YmousePos2 = dotName2.getRelativePointerPosition().x;
  var mouseYrelPoint1 = leftLinePoint - YmousePos1;
  var mouseYrelPoint2 = rightLinePoint - YmousePos2;
  //console.log(mouseXrelPoint2);
  //console.log(mouseXrelPoint1);
+=======
+ console.log(mouseXrelPoint2);
+ console.log(mouseXrelPoint1);
+>>>>>>> parent of ebbb415 (equilibrium moves!!)
 =======
  console.log(mouseXrelPoint2);
  console.log(mouseXrelPoint1);
@@ -361,6 +371,9 @@ if ((Math.abs(mouseXrelPoint1%squareWidth) <1)|| ((Math.abs(mouseXrelPoint2%squa
   console.log("far enough");
  dotName1.y(leftLinePoint);
  dotName2.y(rightLinePoint);
+<<<<<<< HEAD
+>>>>>>> parent of ebbb415 (equilibrium moves!!)
+=======
 >>>>>>> parent of ebbb415 (equilibrium moves!!)
  const points = [
   dotName1.x(),
@@ -439,6 +452,7 @@ stage.draw();
 
 demLineAnchorLeft.on('dragmove', function () {
 <<<<<<< HEAD
+<<<<<<< HEAD
   moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight, "left");
   remapEquilibrium();
 });
@@ -456,6 +470,21 @@ supLineAnchorLeft.on('dragmove', function () {
 supLineAnchorRight.on('dragmove', function () {
   moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight, "right");
   remapEquilibrium();
+=======
+  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
+});
+
+demLineAnchorRight.on('dragmove', function () {
+  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
+});
+
+supLineAnchorLeft.on('dragmove', function () {
+  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
+});
+
+supLineAnchorRight.on('dragmove', function () {
+  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
+>>>>>>> parent of ebbb415 (equilibrium moves!!)
 =======
   moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
 });
@@ -490,6 +519,7 @@ supLineAnchorRight.on('dragend', function () {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 //find slope and equations relevant
 function findPoints(line, secondLine){
   var x11 = line.points()[0];
@@ -520,6 +550,10 @@ function findPoints(line, secondLine){
 >>>>>>> parent of ebbb415 (equilibrium moves!!)
 
 
+=======
+
+
+>>>>>>> parent of ebbb415 (equilibrium moves!!)
 
 
 
