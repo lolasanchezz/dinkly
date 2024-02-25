@@ -281,6 +281,13 @@ const demLineAnchorRight = new Konva.Circle({
 })
 demAndSupLinesLayer.add(demLineAnchorRight);
 
+
+
+function moveOnX(line,dotName1,dotName2){
+  
+}
+
+
 var isSupLine;
 function moveBothLines(line, dotName1, dotName2, dotDragged){
   //console.log(dotName1.getRelativePointerPosition().x);
@@ -330,7 +337,7 @@ if (line.points[2] > stage.width()){
   if ((Math.abs(mouseYrelPoint1%squareWidth) <1)|| ((Math.abs(mouseYrelPoint2%squareWidth)) <1)){
     line.points[3] = dotName2.y();
     line.points[2] = stage.width();
-  var difference = Math.abs(dotName2.x() - (stage.width()+stage.width/50));
+    var difference = Math.abs(dotName2.x() - (stage.width()+stage.width/50));
   dotName2.radius() = dotName2.radius() + difference;
   }
 
@@ -383,7 +390,7 @@ demAndSupLinesLayer.batchDraw();
  
  }
  
-
+}
 
 
 
