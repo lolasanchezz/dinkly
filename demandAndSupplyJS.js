@@ -35,7 +35,7 @@ function checkDivHeightAndWidth() {
     console.log(stage.width());
     console.log(stage.height());
     var backgroundRectangleCanvas = document.getElementById(
-      "canvasContainerBackground"
+      "canvasContainerBackground" 
     );
     backgroundRectangleCanvas.style.width = stage.width();
     backgroundRectangleCanvas.style.height = stage.height();
@@ -380,22 +380,8 @@ demAndSupLinesLayer.batchDraw();
   }
   
  }
-var lastRightYDraggedPoint = line.points[2];
-} else if (dotDragged == "left") {
-
-  var lastLeftYDraggedPoint = line.points[3]
-}
-
-
-
-if (supLine) {
-  lastDraggedYLeftSupPoint = lastLeftYDraggedPoint;
-  lastDraggedYRightSupPoint = lastRightYDraggedPoint;
-} else {
-  lastDraggedYLeftDemPoint = lastLeftYDraggedPoint;
-  lastDraggedYRightDemPoint = lastRightYDraggedPoint;
-}
-}
+ 
+ }
  
 
 
