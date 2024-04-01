@@ -1,15 +1,38 @@
 <!DOCTYPE html>
 <html>
-    <head> 
-        <script src="https://unpkg.com/konva@9/konva.min.js"></script>
-         <link rel="stylesheet" href="demandAndSupply.css">
-    </head>
-        <body>
-            <div class = "flex-container">
-            <div id="canvasContainer"></div>
-            <div id="canvasContainerBackground" style = "position: absolute; background-color: #d6d6d6; z-index: 2;"></div>
-            <div id="buttons"></div>
+<head>
+    <script src="konva/konva.js"></script>
+    <link rel="stylesheet" href="demandAndSupply.css">
+    
+</head>
+<body>
+    <div class="flex-container">
+        <div id="canvasContainer"></div>
+        <div id="canvasContainerBackground" style="position: absolute; background-color: #d6d6d6; z-index: 2;">
+           
+        </div>
+        
+        <div id="buttons">
+            <h3>info</h3>
+            <p id="mrsOfDem"></p> 
+            <p id="mrsOfSup"></p> 
+            <div id = "controls" style = "width: 100%; margin:0 auto;">
+                <p id = "resetLines">Reset lines</p>
+                <div id = "upAndDown">
+                <h2>move lines vertically</h2>
+                <button id="supMoveUpButton">move up supply</button>
+                <button id="supMoveDownButton">move down supply</button>
+                <br>
+                <button id="demMoveUpButton">move up demand</button>
+                <button id="demMoveDownButton">move down demand</button>
             </div>
-            <script src="demandAndSupplyJS.js" ></script> 
-        </body>
+            </div>
+        </div>
+        
+        
+        </div>
+    </div>
+    
+</body>
+<script src="demandAndSupplyJS.js"></script>
 </html>

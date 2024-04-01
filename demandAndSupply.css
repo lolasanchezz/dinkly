@@ -3,7 +3,11 @@ margin: 0;
 display: flex;
 height: 100vh;
 }
-
+@font-face {
+    font-family: "NotCourierSans";
+    src: url(assets/fonts/NotCourierSans.otf);
+    
+  } 
 #canvasContainer {
     position:relative;
     background-color: white;
@@ -17,9 +21,71 @@ height: 100vh;
     background-color: white;
 }
 #buttons {
-    background-color:black;
+    background-color:gray;
     flex:1 1 30%;
 }
+#buttons p {
+    font-family: notCourierSans;
+    font-weight: bold;
+    padding-left: 25%;
+    padding-right: 25%;
+    text-align: justify;
+    color: white;
+}
+
+#buttons h3 {
+    font-family: notCourierSans;
+    font-weight: bold;
+    padding-left: 25%;
+    padding-right: 25%;
+    text-align: center;
+    color: white;
+    font-size: x-large;
+    background-color: rgb(88, 86, 86)
+
+}
+#buttons h2 {
+    font-family: notCourierSans;
+    font-weight: bold;
+    padding-left: 25%;
+    padding-right: 25%;
+    text-align: center;
+    color: white;
+    font-size: x-large;
+    background-color: rgb(88, 86, 86)
+
+}
+
+
+#upAndDown p {
+    font-family: notCourierSans;
+    min-height: 5px;
+    display: inline;
+}
+
+#controls h3 {
+    font-family: notCourierSans;
+    font-weight: bold;
+    border: 1px solid #333;
+
+    position: relative;
+    padding: auto;
+    cursor: pointer;
+    background-color: none;
+    text-decoration: none;
+    box-shadow: none;
+    justify-content: center;
+}
+
+
+
+
+#resetLines:hover {
+    color: white;
+    background-color: rgb(81, 79, 79);
+    cursor: pointer;
+}
+
 .konvajs-content {
     /*background-color: #d6d6d6;*/
     position:absolute;

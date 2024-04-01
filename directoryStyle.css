@@ -27,4 +27,9 @@
     src: url(assets/fonts/SuperNotoriousTordue.otf);
   }
 
+  .resetLines {
+    color: gray;
+  font: supah;
+  }
+
   
