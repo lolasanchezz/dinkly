@@ -28,7 +28,8 @@ var demLine = new Konva.Line({
   strokeWidth: 2,
   listening: true,
 });
-
+var frontLayer = new Konva.Layer();
+stage.add(frontLayer);
 var demAndSupLinesLayer = new Konva.Layer();
 var backgroundLayer = new Konva.Layer();
 var taxLayer = new Konva.Layer();
@@ -63,6 +64,32 @@ function checkDivHeightAndWidth() {
     );
     backgroundRectangleCanvas.style.width = stage.width();
     backgroundRectangleCanvas.style.height = stage.height();
+  }
+}
+
+function findPoints(line, secondLine){
+  var x11 = line.points()[0];
+  var y11 = line.points()[1];
+  var x12 = line.points()[2];
+  var y12 = line.points()[3];
+  var sl1 = (y12 -y11)/(x12-x11);
+  var x21 = secondLine.points()[0];
+  var y21 = secondLine.points()[1];
+  var x22 = secondLine.points()[2];
+  var y22 = secondLine.points()[3];
+  var sl2 = (y22 - y21)/(x22 - x21);
+  var line1Yint = y11 - sl1*x11;
+  var line2Yint = y21 - sl2*x21;
+  if (sl1 == sl2){
+    var sharedXcoord = ((x11-x12)/2);
+    var sharedYcoord = ((y11 - y12)/2);
+    //console.log("equilibrium x:" +sharedXcoord + ",y:" + sharedYcoord);
+    return[sharedXcoord,sharedYcoord,sl1,sl2];
+  } else {
+  var sharedXcoord = ((line1Yint - line2Yint)/(sl2-sl1));
+  var sharedYcoord =sl1*sharedXcoord + line1Yint;
+  console.log("equilibrium x:" +sharedXcoord + ",y:" + sharedYcoord);
+  return[sharedXcoord,sharedYcoord,sl1,sl2, line1Yint, line2Yint];
   }
 }
 function generateRectLesson(widthOfText, heightOfText) {
@@ -447,10 +474,17 @@ function updateSupUnitTax(){
   taxLayer.batchDraw();
   console.log("tax run")
 
-  if ((supLine.points()[0] > 0) && (supLine.points()[1] > 0)){
-    //extend line here
+  if (demLine.points()[0] > 1) {
+  
+    var newX = (demLine.points()[0] - unitTax);
+
+    supLineUnitTax.points()[0] = newX;
+    supLineUnitTax.points()[1] = stage.height();
   }
 }
+
+//var taxSurplusLabel = new Konva.
+
 
 var pux = findPoints(supLineUnitTax, supLine)[0];
 var puy = findPoints(supLineUnitTax, supLine)[1];
@@ -631,6 +665,59 @@ supLineAnchorRight.on('dragend', function () {
   updateEverythingWPU();
 });
 
+  var cds = new Konva.Text({
+    x: 0,
+    y: 0,
+    text: "",
+    fontSize: 15,
+    fontFamily: 'Arial',
+    fill: 'black',
+    shadowColor: 'white',
+    shadowBlur: 5,
+    shadowOpacity: 1,
+    opacity:0,
+  });
+  frontLayer.add(cds);
+
+function delayedShow(){
+  var pointerPos = stage.getPointerPosition();
+  
+  if (!(pointerPos == undefined)) {
+    cds.opacity(1);
+    var x = pointerPos.x;
+    var y = pointerPos.y;
+    console.log(x);
+    if (x > stage.width()/2){
+      x = x - 20;
+    } else {
+      x = x + 20;
+    }
+
+    if (pointerPos.y > stage.height()/2) {
+      y = y - 20;
+    } else {
+      y = y + 20;
+    }
+      cds.x(x);
+      cds.y(y);
+      cds.text((Math.round(x)) + "," + (Math.round(500 - y)));
+      console.log(pointerPos);
+      frontLayer.batchDraw();
+    
+    console.log("mouse over ran");
+    cds.moveToTop();
+}
+}
+
+stage.on("mousedown", function () {
+  
+      delayedShow();
+
+});
+
+stage.on("mouseup", function () {
+cds.opacity(0);
+});
 
 
 
@@ -681,31 +768,7 @@ var newNewPoints = [0, stage.height(), 0, equilibrium.y(), equilibrium.x(), equi
 
 
 //find slope and equations relevant
-function findPoints(line, secondLine){
-  var x11 = line.points()[0];
-  var y11 = line.points()[1];
-  var x12 = line.points()[2];
-  var y12 = line.points()[3];
-  var sl1 = (y12 -y11)/(x12-x11);
-  var x21 = secondLine.points()[0];
-  var y21 = secondLine.points()[1];
-  var x22 = secondLine.points()[2];
-  var y22 = secondLine.points()[3];
-  var sl2 = (y22 - y21)/(x22 - x21);
-  var line1Yint = y11 - sl1*x11;
-  var line2Yint = y21 - sl2*x21;
-  if (sl1 == sl2){
-    var sharedXcoord = ((x11-x12)/2);
-    var sharedYcoord = ((y11 - y12)/2);
-    //console.log("equilibrium x:" +sharedXcoord + ",y:" + sharedYcoord);
-    return[sharedXcoord,sharedYcoord,sl1,sl2];
-  } else {
-  var sharedXcoord = ((line1Yint - line2Yint)/(sl2-sl1));
-  var sharedYcoord =sl1*sharedXcoord + line1Yint;
-  console.log("equilibrium x:" +sharedXcoord + ",y:" + sharedYcoord);
-  return[sharedXcoord,sharedYcoord,sl1,sl2];
-  }
-}
+
 
 
 function moveUpLines(line){
