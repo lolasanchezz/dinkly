@@ -4,7 +4,11 @@ var scaleX = 1;
 var scaleY = 1;
 var firstTime = true;
 console.log(firstTime);
-var squareWidth = 20;
+var squareWidth = 25;
+var taxShown = true;
+
+
+
 
 var stage = new Konva.Stage({
   container: "canvasContainer", // id of container <div>
@@ -12,6 +16,19 @@ var stage = new Konva.Stage({
   height: sceneHeight,
   id: "konvaStage",
 });
+var supLine = new Konva.Line({
+  points: [0, 0, stage.width(), stage.height()],
+  stroke: "black",
+  strokeWidth: 2,
+  listening: true,
+});
+var demLine = new Konva.Line({
+  points: [0, stage.height(), stage.width(), 0],
+  stroke: "black",
+  strokeWidth: 2,
+  listening: true,
+});
+
 var demAndSupLinesLayer = new Konva.Layer();
 var backgroundLayer = new Konva.Layer();
 var taxLayer = new Konva.Layer();
@@ -31,6 +48,7 @@ function fitSceneIntoDiv() {
   var scale = Math.min(changeInScaleX, changeInScaleY);
   return scale;
 }
+
 function checkDivHeightAndWidth() {
   var parentCanvasDiv = document.getElementById("canvasContainer");
   var divWidth = parentCanvasDiv.offsetWidth;
@@ -84,19 +102,20 @@ function generateRect() {
 }
 
   var prodSurplus = new Konva.Line({
-    points: [0, stage.width(), equilibrium.x(), equilibrium.y(), 0, equilibrium.y()],
+    points: [0, stage.width(), equilibrium.x(), equilibrium.y(), 0, equilibrium.y(), demLine.points()[0], demLine.points()[1]],
     fill: 'red',
     opacity: 0.5,
     closed: true,
   });
 
 
+
 var consSurplus = new Konva.Line({
-  points: [0, stage.height(), equilibrium.x(), equilibrium.y(), 0, equilibrium.y()],
+  points: [0, 0, equilibrium.x(), equilibrium.y(), 0, equilibrium.y()],
   fill: 'blue',
   opacity:0.5,
   closed: true,
-})
+});
 taxLayer.add(consSurplus);
 
 function generatePointsAsCoords() {
@@ -168,18 +187,7 @@ function pluggingInCoordIDS() {
   }
 }
 
-var supLine = new Konva.Line({
-  points: [0, 0, stage.width(), stage.height()],
-  stroke: "black",
-  strokeWidth: 2,
-  listening: true,
-});
-var demLine = new Konva.Line({
-  points: [0, stage.height(), stage.width(), 0],
-  stroke: "black",
-  strokeWidth: 2,
-  listening: true,
-});
+
 
 
 demAndSupLinesLayer.add(equilibrium);
@@ -404,88 +412,272 @@ demAndSupLinesLayer.batchDraw();
   ]
 
   line.points(points);
-  updateProdSurplus();
+}
+  
+}
+updateProdSurplus();
+  if (taxShown){
+  updateSupUnitTax();
+  movePuEquilibrium();
+  updateNewPuEq();
+  
+    
+  }
+
+}
+ 
+
+ var unitTax = 50;
+
+// tax section //
+
+function genSupLineUnitTax(){
+  demLine.stroke('gray');
+    supLineUnitTax = new Konva.Line({
+      points: [demLine.points()[0], demLine.points()[1] - unitTax, demLine.points()[2], demLine.points()[3] - unitTax],
+      stroke: 'red',
+      strokeWidth: 2,
+    })
+    return supLineUnitTax;
+}
+taxLayer.add(genSupLineUnitTax());
+taxLayer.batchDraw();
+function updateSupUnitTax(){
+  supLineUnitTax.points([demLine.points()[0], demLine.points()[1] - unitTax, demLine.points()[2], demLine.points()[3] - unitTax]);
+  taxLayer.batchDraw();
+  console.log("tax run")
+
+  if ((supLine.points()[0] > 0) && (supLine.points()[1] > 0)){
+    //extend line here
+  }
 }
 
+var pux = findPoints(supLineUnitTax, supLine)[0];
+var puy = findPoints(supLineUnitTax, supLine)[1];
+var puEquilbrium = new Konva.Circle({
+  radius: 10,
+  fill: "#ABFF4F",
+  pux: pux,
+  puy: puy,
+  //opacity: 0,
+});
+taxLayer.add(puEquilbrium);
+taxLayer.batchDraw();
 
+function movePuEquilibrium(){
+  var x = findPoints(supLineUnitTax, supLine)[0];
+  var y = findPoints(supLineUnitTax, supLine)[1];
+  puEquilbrium.opacity(0.6);
+  puEquilbrium.x(x);
+  puEquilbrium.y(y);
+  taxLayer.batchDraw();
+  equilibrium.fill('gray');
+  console.log("pu moving");
 }
- }
+
  
 function resetAnchor(anchor1, anchor2, line){
   anchor1.x(line.points()[0]);
   anchor2.x(line.points()[2]);
   anchor1.y(line.points()[1]);
-  anchor2.y(line.points()[3])
+  anchor2.y(line.points()[3]);
+  updateSupUnitTax();
+
 }
 stage.add(demAndSupLinesLayer);
 stage.draw();
+
+function findYofNewEq(){
+var invisLine = new Konva.Line({
+points: [puEquilbrium.x(), puEquilbrium.y()-10, puEquilbrium.x(), stage.height()],
+opacity: 0,
+stroke: 'black',
+strokeWidth: 2,
+});
+taxLayer.add(invisLine);
+taxLayer.batchDraw();
+
+var slopeNewTax = findPoints(supLineUnitTax, invisLine)[2];
+var yIntercept = demLine.points()[1] - (slopeNewTax * demLine.points()[0]);
+var y = (slopeNewTax*puEquilbrium.x() + yIntercept);
+var x = puEquilbrium.x();
+console.log(x + y);
+return [x,y];
+}
+
+var newPuEq = new Konva.Circle({
+  x: findYofNewEq()[0],
+  y: findYofNewEq()[1],
+  radius: 10,
+  fill: '#ABFF4F',
+  opacity: 0,
+});
+
+
+taxLayer.add(newPuEq);
+taxLayer.batchDraw();
+
+function updateNewPuEq(){
+  newPuEq.x(findYofNewEq()[0]);
+  newPuEq.y(findYofNewEq()[1]);
+  newPuEq.opacity(1);
+}
+
+var taxRevenue = new Konva.Line({
+points: [0, puEquilbrium.y(), puEquilbrium.x(), puEquilbrium.y(), newPuEq.x(), newPuEq.y(), 0, newPuEq.y()],
+fill: 'pink',
+opacity: 0.5,
+closed: true,
+});
+
+var dwl = new Konva.Line({
+  points: [taxRevenue.points[2], taxRevenue.points[3], equilibrium.x(), equilibrium.y(), taxRevenue.points[4], taxRevenue.points[5]],
+  fill: 'purple',
+  opacity: 0.5,
+  closed: true,
+})
+taxLayer.add(dwl);
+
+taxLayer.add(taxRevenue);
+taxLayer.batchDraw();
+
+function updateEverythingWPU(){
+// tax revenue
+var taxRevPoints = [0, puEquilbrium.y(), puEquilbrium.x(), puEquilbrium.y(), newPuEq.x(), newPuEq.y(), 0, newPuEq.y()]
+taxRevenue.points(taxRevPoints);
+
+// cons surplus
+consSurplus.points()[4] = puEquilbrium.x();
+consSurplus.points()[5] = puEquilbrium.y();
+consSurplus.points()[7] = puEquilbrium.y();
+
+// prod surplus
+prodSurplus.points()[4] = newPuEq.x();
+prodSurplus.points()[5] = newPuEq.y();
+prodSurplus.points()[3] = newPuEq.y();
+// deadweight loss
+var dwlPoints = [puEquilbrium.x(), puEquilbrium.y(), equilibrium.x(), equilibrium.y(), newPuEq.x(), newPuEq.y()];
+console.log("dwl points" + dwlPoints);
+dwl.points(dwlPoints);
+}
 //demLineFunction
 
 demLineAnchorLeft.on('dragmove', function () {
   moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
   remapEquilibrium();
   putInMRS();
-  updateProdSurplus()
+  updateProdSurplus();
+  updateSupUnitTax();
+  updateEverythingWPU();
 });
 
 demLineAnchorRight.on('dragmove', function () {
   moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
   remapEquilibrium();
   putInMRS();
-  updateProdSurplus()
+  updateProdSurplus();
+  updateSupUnitTax();
+  updateEverythingWPU();
 });
 
 supLineAnchorLeft.on('dragmove', function () {
   moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
   remapEquilibrium();
   putInMRS();
-  updateProdSurplus()
+  updateProdSurplus();
+  updateSupUnitTax();
+  updateEverythingWPU();
 });
 
 supLineAnchorRight.on('dragmove', function () {
   moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
   remapEquilibrium();
   putInMRS();
-  updateProdSurplus()
+  updateProdSurplus();
+  updateSupUnitTax();
+  updateEverythingWPU();
 });
 
 demLineAnchorLeft.on('dragend', function () {
   resetAnchor(demLineAnchorLeft, demLineAnchorRight, demLine);
   //remapEquilibrium();
   putInMRS();
-  updateProdSurplus()
+  updateProdSurplus();
+  updateSupUnitTax();
+  updateEverythingWPU();
 });
 demLineAnchorRight.on('dragend', function () {
   resetAnchor(demLineAnchorLeft, demLineAnchorRight, demLine);
   //remapEquilibrium();
   putInMRS();
-  updateProdSurplus()
+  updateProdSurplus();
+  updateSupUnitTax();
+  updateEverythingWPU();
 });
 
 supLineAnchorLeft.on('dragend', function () {
   resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
   //remapEquilibrium();
   putInMRS();
-  updateProdSurplus()
+  updateProdSurplus();
+  updateEverythingWPU();
 });
 
 supLineAnchorRight.on('dragend', function () {
   resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
   //remapEquilibrium();
   putInMRS();
-  updateProdSurplus()
+  updateProdSurplus();
+  updateEverythingWPU();
 });
 
 
+
+
+
+demLineAnchorLeft.on('mouseenter', function(){
+  document.body.style.cursor = 'pointer';
+})
+demLineAnchorRight.on('mouseenter', function(){
+  document.body.style.cursor = 'pointer';
+})
+supLineAnchorLeft.on('mouseenter', function(){
+  document.body.style.cursor = 'pointer';
+})
+supLineAnchorRight.on('mouseenter', function(){
+  document.body.style.cursor = 'pointer';
+})
+
+
+demLineAnchorLeft.on('mouseout', function(){
+  document.body.style.cursor = 'default';
+})
+demLineAnchorRight.on('mouseout', function(){
+  document.body.style.cursor = 'default';
+})
+supLineAnchorLeft.on('mouseout', function(){
+  document.body.style.cursor = 'default';
+})
+supLineAnchorRight.on('mouseout', function(){
+  document.body.style.cursor = 'default';
+})
+
 function updateProdSurplus(){
-  var points = [0, stage.width(), equilibrium.x(), equilibrium.y(), 0, equilibrium.y()];
-  prodSurplus.points(points);
+
+var newNewPoints = [0, stage.height(), 0, equilibrium.y(), equilibrium.x(), equilibrium.y(), demLine.points()[0], demLine.points()[1]];
+
+  prodSurplus.points(newNewPoints);
   console.log("updated prodSurplus");
   
+  taxLayer.batchDraw();
+  var points = [0, 0, supLine.points()[0], supLine.points()[1], equilibrium.x(), equilibrium.y(), 0, equilibrium.y()];
+  consSurplus.points(points);
   taxLayer.batchDraw();
 }
 
 
+
+ 
 
 
 //find slope and equations relevant
@@ -578,6 +770,48 @@ var coordsBox = new Konva.Rect({
   isVisible: false,
 })
 
+
+function createNumbsForXAxis(xPos){
+  console.log(xPos);
+  console.log(xPos.toString());
+  return new Konva.Text({ 
+    x: xPos,
+    y: stage.height()-10,
+    text: xPos.toString(),
+    fontSize: 10,
+    fontFamily: 'Arial',
+    fill: 'black',
+  });
+
+}
+
+function createNumbsForYAxis(yPos){
+  return new Konva.Text({
+    x: 0,
+  y:yPos,
+  text: (500-yPos).toString(),
+  fontSize: 10,
+  fontFamily: 'Arial',
+  fill: 'black'
+
+  })
+}
+
+for (var i = 0; i <= stage.width(); i = i + squareWidth){
+
+  backgroundLayer.add(createNumbsForXAxis(i));
+  backgroundLayer.draw();
+}
+for (var i = 0; i<= stage.height(); i = i + squareWidth){
+backgroundLayer.add(createNumbsForYAxis(i));
+backgroundLayer.draw();
+
+}
+
+
+
+
+
 function resetLines (){
   supLine.points([0, 0, stage.width(), stage.height()]);
   demLine.points([0, stage.height(), stage.width(), 0]);
@@ -613,7 +847,6 @@ coordsBox.y(yPos)
 
 
 
-
 document.getElementById("resetLines").addEventListener("click", resetLines);
 
 
@@ -632,21 +865,9 @@ equilibrium.draw();
 
 putInMRS();
 // store the position of two lines in cookies
-document.getElementById("demMoveUpButton").addEventListener("click", function() {
-  moveUpLines("demLine");
-});
-
-document.getElementById("demMoveDownButton").addEventListener("click", function() {
-  moveDownLines("demLine");
-});
 
 
-document.getElementById("supMoveUpButton").addEventListener("click", function() {
-  moveDownLines("supLine");
-});
-document.getElementById("supMoveDownButton").addEventListener("click", function() {
-  moveDownLines("supLine");
-});
+
 
 
 taxLayer.add(prodSurplus);
