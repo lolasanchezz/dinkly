@@ -5,8 +5,19 @@ var scaleY = 1;
 var firstTime = true;
 console.log(firstTime);
 var squareWidth = 25;
-var taxShown = true;
+var taxShown = false;
+var unitTax = 100;
+var firstTaxInput = true;
 
+//tax empty vars
+
+var puEquilbrium;
+var supLineUnitTax;
+var newPuEq;
+var taxRevenue;
+var dwl;
+var taxLabel;
+var dwlLabel;
 
 
 
@@ -14,7 +25,7 @@ var stage = new Konva.Stage({
   container: "canvasContainer", // id of container <div>
   width: sceneWidth,
   height: sceneHeight,
-  id: "konvaStage",
+  id: "konvaStage", 
 });
 var supLine = new Konva.Line({
   points: [0, 0, stage.width(), stage.height()],
@@ -38,6 +49,7 @@ var equilibrium = new Konva.Circle({
   y: stage.height() / 2,
   radius: 10,
   fill: "#ABFF4F"
+  
 });
 function fitSceneIntoDiv() {
   var container = document.getElementById("canvasContainer");
@@ -283,9 +295,9 @@ var leftSupLinePoint = supLine.points()[1];
 
 
 var originalXSupLeft = supLine.points()[0];
-var originalXSupRight = supLine.points()[2];
 var originalXDemLeft = demLine.points()[0];
 var originalXDemRight = demLine.points()[2];
+var originalXSupRight = supLine.points()[2];
 
 
 
@@ -295,6 +307,8 @@ const supLineAnchorLeft = new Konva.Circle({
   y: leftSupLinePoint,
   radius: 50,
   
+  stroke: 'black',
+  strokeWidth: 0.5,
   draggable: true
 })
 
@@ -305,6 +319,8 @@ const supLineAnchorRight = new Konva.Circle({
   y: rightSupLinePoint,
   radius: 50,
   
+  stroke: 'black',
+  strokeWidth: 0.5,
   draggable: true
 })
 demAndSupLinesLayer.add(supLineAnchorRight);
@@ -316,6 +332,8 @@ const demLineAnchorLeft = new Konva.Circle({
   y: leftDemLinePoint,
   radius: 50,
   
+  stroke: 'black',
+  strokeWidth: 0.5,
   draggable: true
 })
 
@@ -326,6 +344,8 @@ const demLineAnchorRight = new Konva.Circle({
   y: rightDemLinePoint,
   radius: 50,
   
+  stroke: 'black',
+  strokeWidth: 0.5,
   draggable: true
 })
 demAndSupLinesLayer.add(demLineAnchorRight);
@@ -440,40 +460,54 @@ demAndSupLinesLayer.batchDraw();
 
   line.points(points);
 }
-  
+
 }
-updateProdSurplus();
+  updateProdSurplus();
+  //remapEquilibrium();
   if (taxShown){
-  updateSupUnitTax();
-  movePuEquilibrium();
-  updateNewPuEq();
-  
-    
+    updateEverythingWPU();
+    console.log(demLine.points());
   }
 
 }
  
 
- var unitTax = 50;
+var csuLabel = new Konva.Text({
+  x: 0,
+  y: consSurplus.points()[7],
+  text: 'consumer surplus',
+  fill: 'white',
+  fontSize: 20,
+  opacity: 0,
+  });
+  
+  
+  taxLayer.add(csuLabel);
 
+  var psuLabel = new Konva.Text({
+    x: 0,
+    y: prodSurplus.points()[3],
+    text: 'producer surplus',
+    fill: 'white',
+    fontSize: 20,
+    opacity: 0,
+    });
+
+
+    taxLayer.add(psuLabel);
+  
 // tax section //
 
-function genSupLineUnitTax(){
-  demLine.stroke('gray');
-    supLineUnitTax = new Konva.Line({
-      points: [demLine.points()[0], demLine.points()[1] - unitTax, demLine.points()[2], demLine.points()[3] - unitTax],
-      stroke: 'red',
-      strokeWidth: 2,
-    })
-    return supLineUnitTax;
-}
-taxLayer.add(genSupLineUnitTax());
+
 taxLayer.batchDraw();
+
 function updateSupUnitTax(){
+  demLine.stroke('gray');
+  console.log("unitTax" + unitTax);
   supLineUnitTax.points([demLine.points()[0], demLine.points()[1] - unitTax, demLine.points()[2], demLine.points()[3] - unitTax]);
   taxLayer.batchDraw();
   console.log("tax run")
-
+  supLineUnitTax.opacity(1);
   if (demLine.points()[0] > 1) {
   
     var newX = (demLine.points()[0] - unitTax);
@@ -481,27 +515,18 @@ function updateSupUnitTax(){
     supLineUnitTax.points()[0] = newX;
     supLineUnitTax.points()[1] = stage.height();
   }
+
+
 }
 
-//var taxSurplusLabel = new Konva.
 
 
-var pux = findPoints(supLineUnitTax, supLine)[0];
-var puy = findPoints(supLineUnitTax, supLine)[1];
-var puEquilbrium = new Konva.Circle({
-  radius: 10,
-  fill: "#ABFF4F",
-  pux: pux,
-  puy: puy,
-  //opacity: 0,
-});
-taxLayer.add(puEquilbrium);
-taxLayer.batchDraw();
+
 
 function movePuEquilibrium(){
   var x = findPoints(supLineUnitTax, supLine)[0];
   var y = findPoints(supLineUnitTax, supLine)[1];
-  puEquilbrium.opacity(0.6);
+  
   puEquilbrium.x(x);
   puEquilbrium.y(y);
   taxLayer.batchDraw();
@@ -515,40 +540,34 @@ function resetAnchor(anchor1, anchor2, line){
   anchor2.x(line.points()[2]);
   anchor1.y(line.points()[1]);
   anchor2.y(line.points()[3]);
-  updateSupUnitTax();
+  
 
 }
 stage.add(demAndSupLinesLayer);
 stage.draw();
 
 function findYofNewEq(){
+  var puX = puEquilbrium.x();
+  var puY = puEquilbrium.y();
 var invisLine = new Konva.Line({
-points: [puEquilbrium.x(), puEquilbrium.y()-10, puEquilbrium.x(), stage.height()],
+points: [puX, puY-10, puX, stage.height()],
 opacity: 0,
 stroke: 'black',
-strokeWidth: 2,
+stroke: 2,
 });
 taxLayer.add(invisLine);
 taxLayer.batchDraw();
 
 var slopeNewTax = findPoints(supLineUnitTax, invisLine)[2];
 var yIntercept = demLine.points()[1] - (slopeNewTax * demLine.points()[0]);
-var y = (slopeNewTax*puEquilbrium.x() + yIntercept);
-var x = puEquilbrium.x();
+var y = (slopeNewTax*puX + yIntercept);
+var x = puX;
+console.log(puX);
 console.log(x + y);
 return [x,y];
 }
 
-var newPuEq = new Konva.Circle({
-  x: findYofNewEq()[0],
-  y: findYofNewEq()[1],
-  radius: 10,
-  fill: '#ABFF4F',
-  opacity: 0,
-});
 
-
-taxLayer.add(newPuEq);
 taxLayer.batchDraw();
 
 function updateNewPuEq(){
@@ -557,25 +576,18 @@ function updateNewPuEq(){
   newPuEq.opacity(1);
 }
 
-var taxRevenue = new Konva.Line({
-points: [0, puEquilbrium.y(), puEquilbrium.x(), puEquilbrium.y(), newPuEq.x(), newPuEq.y(), 0, newPuEq.y()],
-fill: 'pink',
-opacity: 0.5,
-closed: true,
-});
 
-var dwl = new Konva.Line({
-  points: [taxRevenue.points[2], taxRevenue.points[3], equilibrium.x(), equilibrium.y(), taxRevenue.points[4], taxRevenue.points[5]],
-  fill: 'purple',
-  opacity: 0.5,
-  closed: true,
-})
-taxLayer.add(dwl);
 
-taxLayer.add(taxRevenue);
+
+
 taxLayer.batchDraw();
 
 function updateEverythingWPU(){
+//update sup tax line
+updateSupUnitTax();
+
+
+
 // tax revenue
 var taxRevPoints = [0, puEquilbrium.y(), puEquilbrium.x(), puEquilbrium.y(), newPuEq.x(), newPuEq.y(), 0, newPuEq.y()]
 taxRevenue.points(taxRevPoints);
@@ -592,7 +604,30 @@ prodSurplus.points()[3] = newPuEq.y();
 // deadweight loss
 var dwlPoints = [puEquilbrium.x(), puEquilbrium.y(), equilibrium.x(), equilibrium.y(), newPuEq.x(), newPuEq.y()];
 console.log("dwl points" + dwlPoints);
+dwl.opacity(0.5);
 dwl.points(dwlPoints);
+
+//labels
+taxLabel.opacity(1);
+taxLabel.y((taxRevenue.points()[1] + taxRevenue.points()[3])/2);
+
+
+csuLabel.opacity(1);
+csuLabel.y((consSurplus.points()[7] - csuLabel.fontSize()));
+
+psuLabel.opacity(1);
+psuLabel.y(prodSurplus.points()[3]);
+
+dwlLabel.opacity(1);
+dwlLabel.x(dwl.points()[4]);
+dwlLabel.y((dwl.points()[1] + dwl.points()[3])/2);
+
+
+updateNewPuEq();
+
+
+
+
 }
 //demLineFunction
 
@@ -601,8 +636,10 @@ demLineAnchorLeft.on('dragmove', function () {
   remapEquilibrium();
   putInMRS();
   updateProdSurplus();
-  updateSupUnitTax();
-  updateEverythingWPU();
+  
+  
+
+
 });
 
 demLineAnchorRight.on('dragmove', function () {
@@ -610,8 +647,8 @@ demLineAnchorRight.on('dragmove', function () {
   remapEquilibrium();
   putInMRS();
   updateProdSurplus();
-  updateSupUnitTax();
-  updateEverythingWPU();
+  
+  
 });
 
 supLineAnchorLeft.on('dragmove', function () {
@@ -619,8 +656,8 @@ supLineAnchorLeft.on('dragmove', function () {
   remapEquilibrium();
   putInMRS();
   updateProdSurplus();
-  updateSupUnitTax();
-  updateEverythingWPU();
+  
+ 
 });
 
 supLineAnchorRight.on('dragmove', function () {
@@ -628,8 +665,7 @@ supLineAnchorRight.on('dragmove', function () {
   remapEquilibrium();
   putInMRS();
   updateProdSurplus();
-  updateSupUnitTax();
-  updateEverythingWPU();
+  
 });
 
 demLineAnchorLeft.on('dragend', function () {
@@ -637,32 +673,30 @@ demLineAnchorLeft.on('dragend', function () {
   //remapEquilibrium();
   putInMRS();
   updateProdSurplus();
-  updateSupUnitTax();
-  updateEverythingWPU();
+  
+  
 });
+
 demLineAnchorRight.on('dragend', function () {
   resetAnchor(demLineAnchorLeft, demLineAnchorRight, demLine);
   //remapEquilibrium();
   putInMRS();
   updateProdSurplus();
-  updateSupUnitTax();
-  updateEverythingWPU();
+  
 });
 
 supLineAnchorLeft.on('dragend', function () {
   resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
   //remapEquilibrium();
   putInMRS();
-  updateProdSurplus();
-  updateEverythingWPU();
+  
 });
 
 supLineAnchorRight.on('dragend', function () {
   resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
   //remapEquilibrium();
   putInMRS();
-  updateProdSurplus();
-  updateEverythingWPU();
+  
 });
 
   var cds = new Konva.Text({
@@ -686,6 +720,7 @@ function delayedShow(){
     cds.opacity(1);
     var x = pointerPos.x;
     var y = pointerPos.y;
+    cds.text((Math.round(x)) + "," + (Math.round(500 - y)));
     console.log(x);
     if (x > stage.width()/2){
       x = x - 20;
@@ -700,7 +735,7 @@ function delayedShow(){
     }
       cds.x(x);
       cds.y(y);
-      cds.text((Math.round(x)) + "," + (Math.round(500 - y)));
+      
       console.log(pointerPos);
       frontLayer.batchDraw();
     
@@ -754,12 +789,27 @@ function updateProdSurplus(){
 var newNewPoints = [0, stage.height(), 0, equilibrium.y(), equilibrium.x(), equilibrium.y(), demLine.points()[0], demLine.points()[1]];
 
   prodSurplus.points(newNewPoints);
+  
   console.log("updated prodSurplus");
   
   taxLayer.batchDraw();
   var points = [0, 0, supLine.points()[0], supLine.points()[1], equilibrium.x(), equilibrium.y(), 0, equilibrium.y()];
   consSurplus.points(points);
+  if (taxShown){
+    consSurplus.points()[4] = puEquilbrium.x();
+    consSurplus.points()[5] = puEquilbrium.y();
+    consSurplus.points()[7] = puEquilbrium.y();
+    ///
+    prodSurplus.points()[3] = newPuEq.y();
+    prodSurplus.points()[4] = newPuEq.x();
+    prodSurplus.points()[5] = newPuEq.y();
+
+  }
   taxLayer.batchDraw();
+
+
+
+
 }
 
 
@@ -771,18 +821,9 @@ var newNewPoints = [0, stage.height(), 0, equilibrium.y(), equilibrium.x(), equi
 
 
 
-function moveUpLines(line){
-if (line === "supLine"){
-  supLine.points[0] = supLine.points[0] + squareWidth;
-  supLine.points[2] = supLine.points[2] + squareWidth;
-  
-} else {
-  demLine.points[0] = demLine.points[0] + squareWidth;
-  demLine.points[2] = demLine.points[2] + squareWidth;
-}
 
-console.log("move up ran");
-}
+
+
 
 function moveDownLines(line){
   if (line === "supLine"){
@@ -799,8 +840,83 @@ function moveDownLines(line){
 function putInMRS(){
 var mrsOfDem = document.getElementById("mrsOfDem");
 var mrsOfSup = document.getElementById("mrsOfSup");
-mrsOfDem.textContent = "MRT of Demand: " + findPoints(supLine, demLine)[2];
-mrsOfSup.textContent = "MRT of Supply: " + (findPoints(supLine, demLine)[3] * -1);
+// Extracting the coordinates of the points
+var x1 = supLine.points()[0];
+var y1 = supLine.points()[1];
+var x2 = supLine.points()[2];
+var y2 = supLine.points()[3];
+
+// Calculate the change in quantity demanded
+var deltaQ = y2 - y1;
+var q1 = (y1 + y2) / 2; // Using the average of the initial and final quantity demanded
+
+// Calculate the percentage change in quantity demanded
+var percentChangeQ = (deltaQ / q1) * 100;
+
+// Calculate the change in price
+var deltaP = x2 - x1;
+var p1 = (x1 + x2) / 2; // Using the average of the initial and final price
+
+// Calculate the percentage change in price
+var percentChangeP = (deltaP / p1) * 100;
+
+// Calculate the price elasticity of demand
+var demandElasticity = percentChangeQ / percentChangeP;
+
+// Determine the type of elasticity
+var measureElasticityDem;
+if (demandElasticity > 1){
+   measureElasticityDem = "inelastic";
+   console.log("elastic");
+} else if (demandElasticity < 1){
+   measureElasticityDem = "elastic";
+   console.log("inelastic");
+} else {
+   measureElasticityDem = "unit elastic";
+   console.log("unit elastic");
+}
+
+console.log("Price Elasticity of Demand: ", demandElasticity);
+
+mrsOfDem.textContent = "demand is: " + measureElasticityDem;;
+
+
+//elasticity of supply
+
+x1 = demLine.points()[0];
+y1 = demLine.points()[1];
+x2 = demLine.points()[2];
+y2 = demLine.points()[3];
+
+// Calculate the change in quantity demanded
+ deltaQ = y2 - y1;
+ q1 = (y1 + y2) / 2; // Using the average of the initial and final quantity demanded
+
+// Calculate the percentage change in quantity demanded
+ percentChangeQ = (deltaQ / q1) * 100;
+
+// Calculate the change in price
+ deltaP = x2 - x1;
+p1 = (x1 + x2) / 2; // Using the average of the initial and final price
+
+// Calculate the percentage change in price
+percentChangeP = (deltaP / p1) * 100;
+var supplyElasticity = (percentChangeQ / percentChangeP)*-1;
+console.log(supplyElasticity);
+var measureElasticitySup;
+if (supplyElasticity > 1){
+   measureElasticitySup = "inelastic";
+   console.log("elastic");
+} else if (supplyElasticity < 1){
+   measureElasticitySup = "elastic";
+   console.log("inelastic");
+} else {
+   measureElasticitySup = "unit elastic";
+   console.log("unit elastic");
+}
+
+
+mrsOfSup.textContent = "supply is " + measureElasticitySup;
 }
 
 
@@ -882,6 +998,11 @@ function resetLines (){
   demAndSupLinesLayer.batchDraw();
   resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
   resetAnchor(demLineAnchorLeft, demLineAnchorRight, demLine);
+
+  putInMRS();
+  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
+  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
+
 }
 
 function showStuff(){
@@ -933,14 +1054,140 @@ putInMRS();
 
 
 
+function submitClicked(){
+  if (document.getElementById("taxInput").value == ""){
+    console.log("submitClicked run")
+    return;
+  } else {
+    unitTax = document.getElementById("taxInput").value;
+    console.log(unitTax);
+    taxShown = true;
+    
+  
+  }
+}
+
+document.getElementById("taxSubmit").addEventListener("click", whenTaxTrue);
+
+
+
 taxLayer.add(prodSurplus);
 stage.add(taxLayer);
 prodSurplus.moveToBottom();
 equilibrium.moveToTop();
 stage.draw();
 
+function whenTaxTrue(){
+
+  if (firstTaxInput){
+  submitClicked();
+  //sup line tax!!!!!!
+  supLineUnitTax = new Konva.Line({
+    points: [demLine.points()[0], demLine.points()[1] - unitTax, demLine.points()[2], demLine.points()[3] - unitTax],
+    stroke: 'red',
+    strokeWidth: 2,
+    opacity: 1,
+  })
+  taxLayer.add(supLineUnitTax);
 
 
 
 
+
+// half Pu equilbrium (half opoacity)
+
+  var pux = findPoints(supLineUnitTax, supLine)[0];
+  var puy = findPoints(supLineUnitTax, supLine)[1];
+    puEquilbrium = new Konva.Circle({
+    radius: 10,
+    fill: "#ABFF4F",
+    x: findPoints(supLineUnitTax, supLine)[0],
+    y: findPoints(supLineUnitTax, supLine)[1],
+    opacity: 0.6,
+  });
+
+  taxLayer.add(puEquilbrium);
+  taxLayer.draw();
+
+  //full opacity puEq
+console.log(puEquilbrium.x());
+   newPuEq = new Konva.Circle({
+    x: findYofNewEq()[0],
+    y: findYofNewEq()[1],
+    radius: 10,
+    fill: '#ABFF4F',
+    opacity: 1,
+  });
   
+  
+  taxLayer.add(newPuEq);
+
+
+//tax revenue
+ taxRevenue = new Konva.Line({
+  points: [0, puEquilbrium.y(), puEquilbrium.x(), puEquilbrium.y(), newPuEq.x(), newPuEq.y(), 0, newPuEq.y()],
+  fill: 'pink',
+  opacity: 0.5,
+  closed: true,
+  });
+
+taxLayer.add(taxRevenue);
+
+//dwl
+ dwl = new Konva.Line({
+  points: [taxRevenue.points[2], taxRevenue.points[3], equilibrium.x(), equilibrium.y(), taxRevenue.points[4], taxRevenue.points[5]],
+  fill: 'purple',
+  opacity: 0,
+  closed: true,
+})
+taxLayer.add(dwl);
+ taxLabel = new Konva.Text ({
+  x: 0,
+  y: ((taxRevenue.points()[1] + taxRevenue.points()[3])/2),
+  text: 'tax revenue',
+  fill: 'white',
+  fontSize: 30,
+  opacity: 0,
+});
+taxLayer.add(taxLabel);
+
+
+
+
+
+
+taxLayer.add(psuLabel);
+
+ dwlLabel = new Konva.Text({
+x: dwl.points()[0],
+y: dwl.points()[4],
+text: 'DWL',
+fill: 'white',
+fontSize: 15,
+opacity: 0
+});
+taxLayer.add(dwlLabel);
+
+updateSupUnitTax();
+
+moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
+firstTaxInput = false;
+  } else {
+    submitClicked();
+    updateSupUnitTax();
+    updateEverythingWPU();
+
+
+
+
+  }
+
+
+
+}
+
+
+
+  ///REMOVE LATER!!!!!!!!!!!
+//var eventClick = new Event('click');
+  //document.getElementById("taxSubmit").dispatchEvent(eventClick);
