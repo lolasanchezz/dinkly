@@ -3,7 +3,8 @@
 <head>
     <script src="konva/konva.js"></script>
     <link rel="stylesheet" href="demandAndSupply.css">
-    
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+
 </head>
 <body>
     <div class="flex-container">
@@ -18,19 +19,33 @@
            
         </div>
         
-        <div id="buttons">
+        <div id="preButtons" style = "display: flex; flex-direction:column; justify-content: space-between;">
+            <div id = "buttons" style = "display: flex; flex-direction: column;">
             <h3>info</h3>
-            <p id="mrsOfDem"></p> 
-            <p id="mrsOfSup"></p> 
-            <p id = "resetLines">Reset lines</p>
+            <div style = "display: flex; flex-direction: row-reverse; justify-content: center; align-content: center;">
+                <p id="mrsOfDem" style = "padding: 0; background-color: white; text-align: right; border: 0.15rem solid black;"></p> 
+                <p id="mrsOfSup" style = "padding: 0; background-color: white; text-align: left;border: 0.15rem solid black;"></p> </div>
+            <h3>controls</h3>
+            <p id = "resetLines" class = "hoverControls">Reset lines</p>
     
-                <div id="tax" style="display:flex; justify-content: center; padding: 0; align-items:baseline;">
+                <div id="tax" style="display:flex; justify-content: flex-start; padding: 0; align-items:baseline;">
                 <input id = "taxInput" placeholder = "input unit tax"></input>
                 <p id = "taxSubmit" style = "padding: 0;" >submit</p>
                 </div>
             </div>
+            <div style = 'display: flex; flex-direction: column; justify-content: center; flex-grow: 1; align-items: center;'>
+            <div id = "chatBubble" style = "display: flex; flex-direction: column; justify-content: center; align-content: center; ">
+            <p id = "chatText" style = "max-width: 250px; text-align: justify;" >meow meow meow</p>
+            <p style = "text-align: center;">⌄</p>
+            
+            <div id = "catDiv" style = "display: flex; flex-direction: row; justify-content: center; ">
+                <model-viewer id = "catModel"  ar-scale = "fixed" src ="assets/dinklyCat.gltf"  camera-controls touch-action="pan-y" ></model-viewer>
+            </div>
+            </div>
             </div>
         </div>
+        </div>
+    </div>
         
         
         </div>

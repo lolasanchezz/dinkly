@@ -44,27 +44,23 @@ justify-content: center;
     background-color: white;
 }
 #buttons {
-    background-color:gray;
-    flex:1 1 30%;
+    background-image: url(assets/infoBg.png);
+    
+    font-family: VCR;
 }
+
 #buttons p {
-    font-family: notCourierSans;
-    font-weight: bold;
-    padding-left: 25%;
-    padding-right: 25%;
-    text-align: justify;
-    color: white;
+    font-family: VCR;
 }
 
 #buttons h3 {
-    font-family: notCourierSans;
-    font-weight: bold;
+    font-family: VCR;
     padding-left: 25%;
     padding-right: 25%;
     text-align: center;
-    color: white;
+    color: rgb(0, 0, 0);
     font-size: x-large;
-    background-color: rgb(88, 86, 86)
+    background-color: rgb(225, 219, 219)
 
 }
 #buttons h2 {
@@ -113,7 +109,17 @@ a:hover {
     background-color: rgb(81, 79, 79);
     cursor: crosshair;
 }
+.hoverControls:hover {
+    color: white;
+    background-color: rgb(81, 79, 79);
+    cursor: crosshair;
+}
 
+#taxSubmit:hover{
+    color: white;
+    background-color: rgb(81, 79, 79);
+    cursor: crosshair;
+}
 .konvajs-content {
     /*background-color: #d6d6d6;*/
     
