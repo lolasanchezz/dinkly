@@ -8,6 +8,7 @@ var squareWidth = 25;
 var taxShown = false;
 var unitTax = 100;
 var firstTaxInput = true;
+var invisLine;
 
 //tax empty vars
 
@@ -355,7 +356,7 @@ var isSupLine;
 function moveBothLines(line, dotName1, dotName2){
 
   if ((dotName1.getRelativePointerPosition().x == null) || (dotName1.getRelativePointerPosition().y == null)){
-    return;
+    stage.setPointersPositions({x: stage.width()/2, y: stage.height()/2});
    }
    //assigning variables and such :3
    if (line === supLine){
@@ -549,7 +550,7 @@ stage.draw();
 function findYofNewEq(){
   var puX = puEquilbrium.x();
   var puY = puEquilbrium.y();
-var invisLine = new Konva.Line({
+ invisLine = new Konva.Line({
 points: [puX, puY-10, puX, stage.height()],
 opacity: 0,
 stroke: 'black',
@@ -574,6 +575,7 @@ function updateNewPuEq(){
   newPuEq.x(findYofNewEq()[0]);
   newPuEq.y(findYofNewEq()[1]);
   newPuEq.opacity(1);
+  //console.log("update ran, " + newPuEq.x() + newPuEq.y());
 }
 
 
@@ -625,7 +627,7 @@ dwlLabel.y((dwl.points()[1] + dwl.points()[3])/2);
 
 updateNewPuEq();
 
-
+movePuEquilibrium();
 
 
 }
@@ -1101,8 +1103,8 @@ function whenTaxTrue(){
     puEquilbrium = new Konva.Circle({
     radius: 10,
     fill: "#ABFF4F",
-    x: findPoints(supLineUnitTax, supLine)[0],
-    y: findPoints(supLineUnitTax, supLine)[1],
+    x: pux,
+    y: puy,
     opacity: 0.6,
   });
 
