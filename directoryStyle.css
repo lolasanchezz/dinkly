@@ -1,11 +1,12 @@
-.subtitlesCool {
-    font-family: helvetica; 
-    font-style: italic; 
-    position: relative;
-    height:20%;
+
+
+#link {
+  font-family: 'VCR';
+  padding-top: 0.5rem; 
+  padding-left: 0.5rem;
+  text-decoration: underline;
+  color: #4d6e56
 }
-
-
 
 
 @font-face {
@@ -26,10 +27,14 @@
     font-family: "supah";
     src: url(assets/fonts/SuperNotoriousTordue.otf);
   }
-
-  .resetLines {
-    color: gray;
-  font: supah;
+  @font-face{
+    font-family: "VCR";
+    src: url(assets/fonts/VCR.ttf);
   }
 
   
+
+  #link:hover {
+    background-color: blanchedalmond;
+    cursor: pointer;
+  }

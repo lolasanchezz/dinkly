@@ -1,25 +1,25 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
     
-    <link type="css" rel = "stylesheet" href= "directoryStyle.css">
+    <link rel="stylesheet" href="directoryStyle.css">
  
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
 </head>
-<body>
-    <div style = "position: fixed">
-    <div style = "position: relative; top: 30%; left: 20%; "   >
-        <div style="position:relative">
-        <img style = "position: relative; top: 0; left: 0; z-index: 1; width: 30% " id = "logo" src = "assets/Artboard 1.png"></img>
-        <model-viewer style = " position: absolute; top: 10%; right:50%; z-index: 2; height: 70px; transform: rotate(-20deg); " src="assets/Asset 4.gltf" camera-controls touch-action="pan-y" ></model-viewer>
-    </div>
-
-     <p1 class = "subtitlesCool" >visualizations of graphs in economics</p1>
-
-<div style =  "padding-top: 10px; padding-left: 30px;">
-    <img src="assets/handsLogo.jpeg" style="position: absolute; z-index:2; width:5%; transform: rotate(90deg);">
-    <ul>
-    <li><a href="demandAndSupply.html">demand and supply graph</a></li>
-    </ul>
+<body style = "display: flex; flex-direction: row; justify-content: center;">
+<div style = "display: flex; justify-content: center; flex-direction: column;">
+<div style = "position: relative;">
+    <img style = "position: relative; top: 0; left: 0; z-index: 1; width: 60% " id = "logo" src = "assets/Artboard 1.png"></img>
+        <model-viewer style = " position: absolute; top: 0; right:30%; z-index: 2; height: 140px; transform: rotate(-20deg); " src="assets/Asset 4.gltf" camera-controls touch-action="pan-y" ></model-viewer>
 </div>
+<p style = "margin-top: -0.75rem; margin-left: 0.3rem;">visualizations of graphs in economics</p>
+<p id = "link"><a href="demandAndSupply.html">- representation of tax in supply and demand</a></p>
+</div>
+
+<div style = "display: flex; justify-content: center; background-color: '#ebf2ec'">
+
+    <model-viewer style = "height: 50rem" src ="assets/dinklyCat.gltf" camera-controls touch-action="pan-y" ></model-viewer>
 </div>
 </body>
+
+</html>

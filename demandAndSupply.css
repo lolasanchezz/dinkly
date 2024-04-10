@@ -1,19 +1,42 @@
 body {
 margin: 0;
-
 height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
 }
 @font-face {
     font-family: "NotCourierSans";
     src: url(assets/fonts/NotCourierSans.otf);
     
   } 
+
+#preCanvasContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex:1 1 70%;
+    z-index: 1;
+    position:relative;
+    background-color: white;
+}
+#subCanvasContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+}
 #canvasContainer {
     position:relative;
     background-color: white;
-    flex:1 1 70%;
-    z-index: 1;
-    margin: 10px 10px 10px 40px;
+    
+    /*margin: 10px 10px 10px 40px;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
 }
 .flex-container {
     display: flex;
@@ -80,15 +103,24 @@ height: 100vh;
 
 
 
-#resetLines:hover {
+#link:hover {
     color: white;
     background-color: rgb(81, 79, 79);
-    cursor: pointer;
+    cursor: crosshair;
+}
+a:hover {
+    color: white;
+    background-color: rgb(81, 79, 79);
+    cursor: crosshair;
 }
 
 .konvajs-content {
     /*background-color: #d6d6d6;*/
-    position:absolute;
-    margin: auto;
-    margin-top: 5%
+    
+    margin: 1rem;
 }
+@font-face{
+    font-family: "VCR";
+    src: url(assets/fonts/VCR.ttf);
+  }
+
