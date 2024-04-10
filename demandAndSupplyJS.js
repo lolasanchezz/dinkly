@@ -1111,13 +1111,13 @@ if (area === 'consSurplus'){
 } else if (area === 'demLine'){
   document.getElementById("chatText").textContent = "this is the demand line. it represents the quantity of a good (y) that consumers are willing to buy at a given price (x). the slope of the line represents the price elasticity of demand, which measures how sensitive the relationship between price and quantity demanded is.";
 } else if (area === 'taxRevenue'){
-document.getElementById("taxRevenue").textContent = "this is the tax revenue. it represents the areas where consumer or producer satisfaction has been taken away by the government in the form of taxes. coordinates where consumers or producers formerly recieved consumer surplus or producer surplus are now just the same as the equilbrium 1 for 1 trade";
+document.getElementById("chatText").textContent = "this is the tax revenue. it represents the areas where consumer or producer satisfaction has been taken away by the government in the form of taxes. coordinates where consumers or producers formerly recieved consumer surplus or producer surplus are now just the same as the equilbrium 1 for 1 trade";
 } else if (area === 'dwl'){
-  document.getElementById("dwl").textContent = 'this is the area where consumers and producers who once recieved surplus are more worse off than the government is better off. in a sense, more value is lost than gained by tax, which is why this area is labeled deadweight loss.';
+  document.getElementById("chatText").textContent = 'this is the area where consumers and producers who once recieved surplus are more worse off than the government is better off. in a sense, more value is lost than gained by tax, which is why this area is labeled deadweight loss.';
 } else if (area === 'supUnitTax'){
   document.getElementById("chatText").textContent = "this is the supply line after the tax has been implemented. unit taxes (a set price on each quantity of product sold) are usually passed on to the consumer in the form of higher prices, as the cost of tax is tacked onto production costs.";
 } else {
-  
+
 }
 
 document.getElementById("catModel").src = "assets/dinklyCatShrugging.gltf";
@@ -1247,6 +1247,24 @@ updateSupUnitTax();
 
 moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
 firstTaxInput = false;
+
+
+taxRevenue.on('mouseover', function () {
+  catSpeak('taxRevenue');
+});
+
+dwl.on('mouseover', function () {
+catSpeak('dwl');
+});
+
+taxRevenue.on('mouseout', function () {
+  resetCatSpeak();
+});
+
+dwl.on('mouseout', function () {
+resetCatSpeak();
+});
+
   } else {
     submitClicked();
     updateSupUnitTax();
