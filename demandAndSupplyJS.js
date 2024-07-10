@@ -11,7 +11,11 @@ var unitTax = 100;
 var firstTaxInput = true;
 var invisLine;
 var catNoise = new Audio('assets/catNoise.mp3')
+var frontLayer = new Konva.Layer();
 
+var demAndSupLinesLayer = new Konva.Layer();
+var backgroundLayer = new Konva.Layer();
+var taxLayer = new Konva.Layer();
 //tax empty vars
 
 var puEquilbrium;
@@ -30,6 +34,52 @@ var stage = new Konva.Stage({
   height: sceneHeight,
   id: "konvaStage", 
 });
+
+const supLineAnchorLeft = new Konva.Circle({
+  x: 0,
+  y: 0,
+  radius: 50,
+  stroke: 'black',
+  strokeWidth: 0.5,
+  draggable: true
+})
+
+const supLineAnchorRight = new Konva.Circle({
+  x: stage.width(),
+  y: stage.height(),
+  radius: 50,
+  
+  stroke: 'black',
+  strokeWidth: 0.5,
+  draggable: true
+})
+demAndSupLinesLayer.add(supLineAnchorRight);
+
+
+const demLineAnchorLeft = new Konva.Circle({
+  x: 0,
+  y: stage.height(),
+  radius: 50,
+  
+  stroke: 'black',
+  strokeWidth: 0.5,
+  draggable: true
+})
+demAndSupLinesLayer.add(demLineAnchorLeft);
+
+const demLineAnchorRight = new Konva.Circle({
+  x: stage.width(),
+  y: 0,
+  radius: 50,
+  
+  stroke: 'black',
+  strokeWidth: 0.5,
+  draggable: true
+})
+demAndSupLinesLayer.add(demLineAnchorRight);
+
+
+
 var supLine = new Konva.Line({
   points: [0, 0, stage.width(), stage.height()],
   stroke: "black",
@@ -42,11 +92,7 @@ var demLine = new Konva.Line({
   strokeWidth: 2,
   listening: true,
 });
-var frontLayer = new Konva.Layer();
-stage.add(frontLayer);
-var demAndSupLinesLayer = new Konva.Layer();
-var backgroundLayer = new Konva.Layer();
-var taxLayer = new Konva.Layer();
+
 var equilibrium = new Konva.Circle({
   x: stage.width() / 2,
   y: stage.height() / 2,
@@ -54,6 +100,8 @@ var equilibrium = new Konva.Circle({
   fill: "#ABFF4F"
   
 });
+
+stage.add(frontLayer);
 function fitSceneIntoDiv() {
   var container = document.getElementById("canvasContainer");
   var containerWidth = container.offsetWidth;
@@ -301,51 +349,11 @@ var originalXDemRight = demLine.points()[2];
 var originalXSupRight = supLine.points()[2];
 
 
-const supLineAnchorLeft = new Konva.Circle({
-  x:supLine.points()[0],
-  y: supLine.points()[1],
-  radius: 50,
-  stroke: 'black',
-  strokeWidth: 0.5,
-  draggable: true
-})
+
 
 demAndSupLinesLayer.add(supLineAnchorLeft);
 
-const supLineAnchorRight = new Konva.Circle({
-  x: supLine.points()[2],
-  y: supLine.points()[3],
-  radius: 50,
-  
-  stroke: 'black',
-  strokeWidth: 0.5,
-  draggable: true
-})
-demAndSupLinesLayer.add(supLineAnchorRight);
-console.log(rightSupLinePoint+ "is y (right anchor on supline) and x is" + supLine.points()[2]);
-//demand line
 
-const demLineAnchorLeft = new Konva.Circle({
-  x:demLine.points()[0],
-  y: demLine.points()[1],
-  radius: 50,
-  
-  stroke: 'black',
-  strokeWidth: 0.5,
-  draggable: true
-})
-
-demAndSupLinesLayer.add(demLineAnchorLeft);
-
-const demLineAnchorRight = new Konva.Circle({
-  x: demLine.points()[2],
-  y: demLine.points()[3],
-  radius: 50,
-  
-  stroke: 'black',
-  strokeWidth: 0.5,
-  draggable: true
-})
 demAndSupLinesLayer.add(demLineAnchorRight);
 
 var isSupLine;
