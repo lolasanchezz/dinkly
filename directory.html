@@ -3,23 +3,30 @@
 <head>
     
     <link rel="stylesheet" href="directoryStyle.css">
- 
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
 </head>
-<body style = "display: flex; flex-direction: row; justify-content: center;">
-<div style = "display: flex; justify-content: center; flex-direction: column;">
-<div style = "position: relative;">
-    <img style = "position: relative; top: 0; left: 0; z-index: 1; width: 60% " id = "logo" src = "assets/Artboard 1.png"></img>
-        <model-viewer style = " position: absolute; top: 0; right:30%; z-index: 2; height: 140px; transform: rotate(-20deg); " src="assets/Asset 4.gltf" camera-controls touch-action="pan-y" ></model-viewer>
-</div>
-<p style = "margin-top: -0.75rem; margin-left: 0.3rem;">visualizations of graphs in economics</p>
-<p id = "link"><a href="demandAndSupply.html">- representation of tax in supply and demand</a></p>
-</div>
 
-<div style = "display: flex; justify-content: center; background-color: '#ebf2ec'">
 
-    <model-viewer style = "height: 50rem" src ="assets/dinklyCat.gltf" camera-controls touch-action="pan-y" ></model-viewer>
+
+<body class = 'body'>
+    <div class = 'subBody'>
+    <div class = 'leftContainer'>
+        <div class = 'logoContainer'>
+            <div class = 'logoSubContainer'>
+                <model-viewer class = 'logoModel' id = 'logoModel' src='assets/Asset 4.gltf' camera-controls touch-action='pan-y'></model-viewer>
+            <img class = 'logo' id = 'logo' src = 'assets/Artboard 1.png'></img>
+        </div>
+        </div>
+        <p class = 'linksHeader'>visualizations of graphs in economics</p>
+        
+    </div>
+    <div class = 'rightContainer'>
+      
+    </div>
 </div>
 </body>
 
+
 </html>
+
+

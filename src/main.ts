@@ -1,27 +1,28 @@
+import Konva from 'konva';
 
-var sceneWidth = 500;
-var sceneHeight = 500;
-var scaleX = 1;
-var scaleY = 1;
-var firstTime = true;
+let sceneWidth: number = 500;
+let sceneHeight: number = 500;
+let scaleX: number = 1;
+let scaleY: number = 1;
+let firstTime: boolean = true;
 
-var squareWidth = 25;
-var taxShown = false;
-var unitTax = 100;
-var firstTaxInput = true;
-var invisLine;
-var catNoise = new Audio('assets/catNoise.mp3')
+let squareWidth: number = 25;
+let taxShown: boolean = false;
+let unitTax: number = 100;
+let firstTaxInput: boolean = true;
+let invisLine: any; // Consider specifying a more precise type based on usage
 
-//tax empty vars
+let catNoise: HTMLAudioElement = new Audio('assets/catNoise.mp3');
 
-var puEquilbrium;
-var supLineUnitTax;
-var newPuEq;
-var taxRevenue;
-var dwl;
-var taxLabel;
-var dwlLabel;
-
+// Tax-related variables
+// Assuming these will be numbers, but adjust types as necessary based on usage
+let puEquilbrium: number | undefined;
+let supLineUnitTax: number | undefined;
+let newPuEq: number | undefined;
+let taxRevenue: number | undefined;
+let dwl: number | undefined;
+let taxLabel: any; // Consider specifying a more precise type
+let dwlLabel: any; // Consider specifying a more precise type
 
 
 var stage = new Konva.Stage({
