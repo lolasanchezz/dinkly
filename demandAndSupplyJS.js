@@ -35,13 +35,76 @@ var stage = new Konva.Stage({
   id: "konvaStage", 
 });
 
+
+
+
+//function for seeing which way the mouse is moving
+let prevX = 0;
+let prevY = 0;
+let mouseMovement = ''
+var slineR = 'bottom';
+var slineL = 'bottom';
+var dlineR = 'bottom';
+var dlineR = 'bottom';
+document.addEventListener('mousemove', function(event) {
+    let currentX = event.clientX;
+    let currentY = event.clientY;
+
+    if (currentX > prevX + squareWidth) {
+        mouseMovement = 'right';
+    } else if (currentX < prevX + squareWidth) {
+        mouseMovement = 'left'
+    }
+
+    if (currentY > prevY + squareWidth) {
+        mouseMovement = 'down'
+    } else if (currentY < prevY + squareWidth) {
+        mouseMovement = 'up'
+    }
+
+    // Update previous position
+    prevX = currentX;
+    prevY = currentY;
+});
+
+
 const supLineAnchorLeft = new Konva.Circle({
   x: 0,
   y: 0,
   radius: 50,
   stroke: 'black',
   strokeWidth: 0.5,
-  draggable: true
+  draggable: true,
+  dragBoundFunction: (pos) => {
+    
+    if (((pos.x = 0))){
+      if (mouseMovement = 'up') {
+        slineR = 'left'
+      return{
+        x: 0,
+        y: pos.y
+    } 
+  } else if (mouseMovement = 'right') {
+    slineR = 'bottom'
+    return {
+      x: pos.x,
+      y: 0
+    }
+  };
+    } else {
+      if (slineR = 'left') {
+        return {
+          x: 0,
+          y: pos.y,
+        }
+      } else if (slineR = 'bottom'){
+        return {
+          x: pos.x,
+          y: 0,
+        }
+      }
+    }
+  }
 })
 
 const supLineAnchorRight = new Konva.Circle({
@@ -102,33 +165,8 @@ var equilibrium = new Konva.Circle({
 });
 
 stage.add(frontLayer);
-function fitSceneIntoDiv() {
-  var container = document.getElementById("canvasContainer");
-  var containerWidth = container.offsetWidth;
-  var containerHeight = container.offsetHeight;
-  
-  var changeInScaleX = 500-(500-containerWidth);
-  var changeInScaleY = 500-(500-containerHeight);
-  var scale = Math.min(changeInScaleX, changeInScaleY);
-  return scale;
-}
 
-function checkDivHeightAndWidth() {
-  var parentCanvasDiv = document.getElementById("canvasContainer");
-  var divWidth = parentCanvasDiv.offsetWidth;
-  var divHeight = parentCanvasDiv.offsetHeight;
-  if (divWidth <= 500 || divHeight <= 500) {
-    stage.width(fitSceneIntoDiv());
-    stage.height(fitSceneIntoDiv());
-    console.log(stage.width());
-    console.log(stage.height());
-    var backgroundRectangleCanvas = document.getElementById(
-      "canvasContainerBackground"
-    );
-    backgroundRectangleCanvas.style.width = stage.width();
-    backgroundRectangleCanvas.style.height = stage.height();
-  }
-}
+
 
 function findPoints(line, secondLine){
   var x11 = line.points()[0];
@@ -1057,7 +1095,6 @@ var testRect = stage.find("#coordRect");
 
 console.log(testRect);
 
-window.addEventListener("resize", checkDivHeightAndWidth);
 //pluggingInCoordIDS();
 backgroundLayer.draw();
 equilibrium.draw();
