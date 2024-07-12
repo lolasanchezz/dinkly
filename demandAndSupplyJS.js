@@ -620,7 +620,6 @@ function updateNewPuEq(){
   newPuEq.x(findYofNewEq()[0]);
   newPuEq.y(findYofNewEq()[1]);
   newPuEq.opacity(1);
-  //console.log("update ran, " + newPuEq.x() + newPuEq.y());
 }
 
 

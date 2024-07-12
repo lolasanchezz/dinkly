@@ -20,22 +20,22 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 1%;
+  padding: 2%;
   height: 100vh;
 }
 .leftContainer {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: left;
   flex-direction: column;
+  height: 60%;
   
-  background-color: beige;
-  width: 50%;
+  width: 60%;
 }
 .logoContainer {
   display: flex;
   justify-content: center;
-  flex-grow: 0.7;
+  flex-grow: 1.5;
   width: 50%;
 }
 .logoSubContainer {
@@ -47,13 +47,16 @@
 }
 
 .logo {
- 
+ padding: 0;
+ margin: 0;
   z-index: 1;
   position: relative;
   width: 100%;
   height: auto;
 }
 .logoModel {
+  padding: 0;
+  margin: 0;
   bottom: 20%;
   left: 25%;
   z-index: 2;
@@ -66,12 +69,52 @@
  
 }
 .rightContainer {
-  background-color:rgb(86, 54, 15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   
-  width: 50%;
+  
+  width: 60%;
+  height: 60%;
 }
+.linksHeader {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.5rem;
+  font-style: italic;
+  flex-grow: 0.5;
+  padding: 0;
+  margin: 0;
+}
+.rightSubContainer {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+}
+.cat {
+  position: absolute;
+  width: 100%;
+  height: 40%;
+  overflow: hidden;
+  aspect-ratio: 1/1;
+}
+.links {
+  display: flex;
+  flex-direction: row;
+  justify-content: first baseline;
+  align-items: center;
+}
+.link {
+  font-family: 'NotCourierSans';
+  padding: 0;
+  margin: 0;
+  font-size: 0.5rem;
+  color: #000000;
 
 
+}
 
 @font-face {
     font-family: "NotCourierSans";

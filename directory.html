@@ -4,6 +4,7 @@
     
     <link rel="stylesheet" href="directoryStyle.css">
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    
 </head>
 
 
@@ -18,10 +19,16 @@
         </div>
         </div>
         <p class = 'linksHeader'>visualizations of graphs in economics</p>
-        
+        <div class = 'links'>
+            <a href = 'demandAndSupply.html'>
+            <p class = 'link' id = 'supAndDemand' >- interactive supply and demand graph</p>
+        </a>
+        </div>
     </div>
     <div class = 'rightContainer'>
-      
+        <div class = 'rightSubContainer'>
+      <model-viewer class = 'cat' id = 'cat' src = 'assets/dinklyCat.gltf' camera-controls touch-action = 'pan-y'></model-viewer>
+    </div>
     </div>
 </div>
 </body>
