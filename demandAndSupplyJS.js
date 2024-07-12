@@ -380,12 +380,10 @@ function findPoints(line, secondLine){
   if (sl1 == sl2){
     var sharedXcoord = ((x11-x12)/2);
     var sharedYcoord = ((y11 - y12)/2);
-    //console.log("equilibrium x:" +sharedXcoord + ",y:" + sharedYcoord);
     return[sharedXcoord,sharedYcoord,sl1,sl2];
   } else {
   var sharedXcoord = ((line1Yint - line2Yint)/(sl2-sl1));
   var sharedYcoord =sl1*sharedXcoord + line1Yint;
-  console.log("equilibrium x:" +sharedXcoord + ",y:" + sharedYcoord);
   return[sharedXcoord,sharedYcoord,sl1,sl2, line1Yint, line2Yint];
   }
 }
@@ -443,7 +441,6 @@ var consSurplus = new Konva.Line({
 taxLayer.add(consSurplus);
 
 function generatePointsAsCoords() {
-  console.log("i think soething is ahppenign")
   return new Konva.Ellipse({
     x: xPos,
     y: yPos,
@@ -455,41 +452,8 @@ function generatePointsAsCoords() {
   });
 }
 
-function createRectPointsForCoords() {
-  if (xPos > stage.width() / 2) {
-    return new Konva.Rect({
-      x: xPos - 5,
-      y: yPos,
-      fill: "#dae6d8",
-      width: 5,
-      height: 5,
-      stroke: "#cccccc",
-      strokeWidth: 0.5,
-      visible: false,
-      id: "coordRect",
-      listening: true,
-    });
-  }
-  return new Konva.Rect({
-    x: xPos,
-    y: yPos,
-    fill: "#dae6d8",
-    width: 5,
-    height: 5,
-    stroke: "#cccccc",
-    strokeWidth: 0.5,
-    visible: false,
-    id: "coordRect" + String(xPos) + String(yPos),
-    listening: true,
-  });
-}
-function showEllipseAndRect(rectID, dotCoordID) {
-  console.log(rectID);
-  console.log(dotCoordID);
 
-  dotCoordID.visible(true);
-  rectID.visible(true);
-}
+
 
 
 
@@ -540,27 +504,11 @@ function generatingShapesWhileLoop() {
   stage.add(backgroundLayer);
   xPos = 0;
 
-  while (yPos <= stage.height()) {
-    xPos = 0;
-    while (xPos <= stage.width()) {
-      backgroundLayer.add(generatePointsAsCoords());
-      backgroundLayer.add(createRectPointsForCoords());
-      //console.log('printed points at' + xPos + ',' + yPos);
-
-      xPos = xPos + squareWidth;
-    }
-    yPos = yPos + squareWidth;
-  }
+ 
   xPos = stage.width();
   yPos = 0;
   console.log(stage.height());
-  while (yPos <= stage.height()) {
-    backgroundLayer.add(generatePointsAsCoords());
-
-    backgroundLayer.add(createRectPointsForCoords());
-    //console.log('printed points at' + xPos + ',' + yPos);
-    yPos = yPos + squareWidth;
-  }
+ 
   stage.add(backgroundLayer);
 }
 
@@ -568,19 +516,6 @@ function generatingShapesWhileLoop() {
 
 
 
-///interactive lines !!!!!!!!!!!!!!!
-
-var rightSupLinePoint = supLine.points()[3]
-var rightDemLinePoint = demLine.points()[3];
-var leftDemLinePoint = demLine.points()[1];
-var leftSupLinePoint = supLine.points()[1];
-
-
-
-var originalXSupLeft = supLine.points()[0];
-var originalXDemLeft = demLine.points()[0];
-var originalXDemRight = demLine.points()[2];
-var originalXSupRight = supLine.points()[2];
 
 
 
@@ -591,134 +526,6 @@ demAndSupLinesLayer.add(supLineAnchorLeft);
 demAndSupLinesLayer.add(demLineAnchorRight);
 
 var isSupLine;
-/* say goodbyre LOL
-function moveBothLines(line, dotName1, dotName2){
-
-  if ((dotName1.getRelativePointerPosition().x == null) || (dotName1.getRelativePointerPosition().y == null)){
-    stage.setPointersPositions({x: stage.width()/2, y: stage.height()/2});
-   }
-   //assigning variables and such :3
-   if (line === supLine){
-    var leftLinePoint = leftSupLinePoint;
-    var rightLinePoint = rightSupLinePoint;
-    var originalXpointLeft = originalXSupLeft;
-    var originalXpointRight = originalXSupRight;
-    isSupLine = true;
-   } else if (line === demLine){
-    var leftLinePoint = leftDemLinePoint;
-    var rightLinePoint = rightDemLinePoint;
-    var originalXpointLeft = originalXDemLeft;
-    var originalXpointRight = originalXDemRight;
-   }
- var mousePos1 = dotName1.getRelativePointerPosition().x;
- var mousePos2 = dotName2.getRelativePointerPosition().x;
- var mouseYrelPoint1 = dotName1.getRelativePointerPosition().y;
- var mouseYrelPoint2 = dotName2.getRelativePointerPosition().y;
- var generalMousePositionY = stage.getRelativePointerPosition().y;
- var generalMousePositionX = stage.getRelativePointerPosition().x;
- var mouseXrelPoint1 = originalXpointLeft - mousePos1;
- var mouseXrelPoint2 = originalXpointRight - mousePos2;
- //console.log(mouseXrelPoint2);
- //console.log(mouseXrelPoint1);
- 
-
-
-//new segment: checking if circles are on mousex/mousey etc (decided to use mouse placement as a gauge for where the circle goes higkey)
-if ((generalMousePositionX > squareWidth*1.5) || (generalMousePositionX > stage.width() - squareWidth*1.5)){
-//MOUSE X CHECKING!! IVER GERE!! 
- if ((Math.abs(mouseXrelPoint1%squareWidth) <1)|| ((Math.abs(mouseXrelPoint2%squareWidth)) <1)){
-  console.log("far enough");
- const points = [
-  dotName1.x(),
-  leftLinePoint,
-  dotName2.x(),
-  rightLinePoint,
- ]
-line.points(points);
-if (isSupLine){
-  originalXSupLeft = line.points()[0];
-  originalXSupRight = line.points()[2];
-  var maxLeftX = 0;
-} else {
-  originalXDemLeft = line.points()[0];
-  originalXDemRight = line.points()[2];
-  var maxLeftX = stage.width();
-}
-demAndSupLinesLayer.batchDraw();
-//RESETTING Y IF X ISN"T TRUE!! DOESNT HAVE TO DO WITH CHANGING Y COORDS LOOL
- } else {
-  
-  if (isSupLine){
-    dotName1.y(leftLinePoint);
-    dotName2.y(rightLinePoint);
-    const points = {
-      originalXSupLeft,
-      leftLinePoint,
-      originalXSupRight,
-      rightLinePoint,
-    }
-    //line.points(points);
-  } else {
-    dotName1.y(leftLinePoint);
-    dotName2.y(rightLinePoint);
-    const points = {
-      originalXDemLeft,
-      leftLinePoint,
-       originalXDemRight, //why are there only three variables here
-    }
-    //line.points(points);
-  }
-  
- }
- //yaxis movement over here acktually 
- } else {
-  if (line === supLine){
-    var leftLinePoint = leftSupLinePoint;
-    var rightLinePoint = rightSupLinePoint;
-    var originalYpointLeft = originalXSupLeft;
-    var originalYpointRight = originalXSupRight;
-    isSupLine = true;
-   } else if (line === demLine){
-    var leftLinePoint = leftDemLinePoint;
-    var rightLinePoint = rightDemLinePoint;
-    var originalYpointLeft = originalXDemLeft;
-    var originalYpointRight = originalXDemRight;
-   }
- var mousePos1Y = dotName1.getRelativePointerPosition().y;
- var mousePos2Y = dotName2.getRelativePointerPosition().y;
- var mouseYrelPoint1 = originalYpointLeft - mousePos1Y;
- var mouseYrelPoint2 = originalYpointRight - mousePos2Y;
-  if ((Math.abs(mouseYrelPoint1%squareWidth) <1)|| ((Math.abs(mouseYrelPoint2%squareWidth)) <1)){
-  //y axis movement - should be the same as x? maybe hioefully im so sleepy highkey
-  //far enough here
-  const points = [
-    dotName1.x(),
-    dotName1.y(),
-    dotName2.x(),
-    dotName2.y(),
-  ]
-
-  line.points(points);
-}
-
-}
-  updateProdSurplus();
-  //remapEquilibrium();
-  if (taxShown){
-    updateEverythingWPU();
-    console.log(demLine.points());
-  }
-
-}
- */
-
-// new move lines function
-
-
-function updatedMoveLines(line){
-  
-
-}
 
 var csuLabel = new Konva.Text({
   x: 0,
@@ -751,10 +558,8 @@ taxLayer.batchDraw();
 
 function updateSupUnitTax(){
   demLine.stroke('gray');
-  console.log("unitTax" + unitTax);
-  supLineUnitTax.points([demLine.points()[0], demLine.points()[1] - unitTax, demLine.points()[2], demLine.points()[3] - unitTax]);
+  supLineUnitTax.points([supLine.points()[0], supLine.points()[1] - unitTax, supLine.points()[2], supLine.points()[3] - unitTax]);
   taxLayer.batchDraw();
-  console.log("tax run")
   supLineUnitTax.opacity(1);
   if (demLine.points()[0] > 1) {
   
@@ -779,7 +584,6 @@ function movePuEquilibrium(){
   puEquilbrium.y(y);
   taxLayer.batchDraw();
   equilibrium.fill('gray');
-  console.log("pu moving");
 }
 
  
@@ -842,14 +646,10 @@ var taxRevPoints = [0, puEquilbrium.y(), puEquilbrium.x(), puEquilbrium.y(), new
 taxRevenue.points(taxRevPoints);
 
 // cons surplus
-consSurplus.points()[4] = puEquilbrium.x();
-consSurplus.points()[5] = puEquilbrium.y();
-consSurplus.points()[7] = puEquilbrium.y();
+updateProdSurplus();
 
 // prod surplus
-prodSurplus.points()[4] = newPuEq.x();
-prodSurplus.points()[5] = newPuEq.y();
-prodSurplus.points()[3] = newPuEq.y();
+updateProdSurplus();
 // deadweight loss
 var dwlPoints = [puEquilbrium.x(), puEquilbrium.y(), equilibrium.x(), equilibrium.y(), newPuEq.x(), newPuEq.y()];
 console.log("dwl points" + dwlPoints);
@@ -939,32 +739,7 @@ cds.opacity(0);
 
 
 
-demLineAnchorLeft.on('mouseenter', function(){
-  document.body.style.cursor = 'pointer';
-})
-demLineAnchorRight.on('mouseenter', function(){
-  document.body.style.cursor = 'pointer';
-})
-supLineAnchorLeft.on('mouseenter', function(){
-  document.body.style.cursor = 'pointer';
-})
-supLineAnchorRight.on('mouseenter', function(){
-  document.body.style.cursor = 'pointer';
-})
 
-
-demLineAnchorLeft.on('mouseout', function(){
-  document.body.style.cursor = 'default';
-})
-demLineAnchorRight.on('mouseout', function(){
-  document.body.style.cursor = 'default';
-})
-supLineAnchorLeft.on('mouseout', function(){
-  document.body.style.cursor = 'default';
-})
-supLineAnchorRight.on('mouseout', function(){
-  document.body.style.cursor = 'default';
-})
 
 function updateProdSurplus(){
 
@@ -1262,11 +1037,10 @@ function resetCatSpeak(){
 }
 
 function submitClicked(){
-  if (document.getElementById("t axInput").value == ""){
+  if (document.getElementById("taxInput").value == ""){
     return;
   } else {
     unitTax = document.getElementById("taxInput").value;
-    console.log(unitTax);
     taxShown = true;
     
   
@@ -1282,14 +1056,14 @@ stage.add(taxLayer);
 prodSurplus.moveToBottom();
 equilibrium.moveToTop();
 stage.draw();
-
+// SECTION functino that's originally run when tax is implemented
 function whenTaxTrue(){
 
   if (firstTaxInput){
   submitClicked();
   //sup line tax!!!!!!
   supLineUnitTax = new Konva.Line({
-    points: [demLine.points()[0], demLine.points()[1] - unitTax, demLine.points()[2], demLine.points()[3] - unitTax],
+    points: [supLine.points()[0], supLine.points()[1] - unitTax, supLine.points()[2], supLine.points()[3] - unitTax],
     stroke: 'red',
     strokeWidth: 2,
     opacity: 1,
@@ -1376,7 +1150,6 @@ taxLayer.add(dwlLabel);
 
 updateSupUnitTax();
 
-moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
 firstTaxInput = false;
 
 
@@ -1414,6 +1187,29 @@ resetCatSpeak();
 
 
 
-  ///REMOVE LATER!!!!!!!!!!!
-//var eventClick = new Event('click');
-  //document.getElementById("taxSubmit").dispatchEvent(eventClick);
+demLineAnchorLeft.on('mouseenter', function(){
+  document.body.style.cursor = 'pointer';
+})
+demLineAnchorRight.on('mouseenter', function(){
+  document.body.style.cursor = 'pointer';
+})
+supLineAnchorLeft.on('mouseenter', function(){
+  document.body.style.cursor = 'pointer';
+})
+supLineAnchorRight.on('mouseenter', function(){
+  document.body.style.cursor = 'pointer';
+})
+
+
+demLineAnchorLeft.on('mouseout', function(){
+  document.body.style.cursor = 'default';
+})
+demLineAnchorRight.on('mouseout', function(){
+  document.body.style.cursor = 'default';
+})
+supLineAnchorLeft.on('mouseout', function(){
+  document.body.style.cursor = 'default';
+})
+supLineAnchorRight.on('mouseout', function(){
+  document.body.style.cursor = 'default';
+})
