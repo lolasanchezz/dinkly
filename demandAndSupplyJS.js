@@ -66,18 +66,126 @@ const demLineAnchorLeft = new Konva.Circle({
   stroke: 'red',
   strokeWidth: 0.5,
   draggable: true,
+  dragBoundFunc: function(pos) {
+    //  setting lines to circles thing
+    let line = demLine;
+    //making sure the right anchor doestt go past the left anchor
+    if (pos.x < squareWidth){
+      let returnPos = {
+        x: demLineAnchorRight.x() - squareWidth,
+        y: pos.y
+      };
+      line.points()[0] = returnPos.x;
+      line.points()[1] = returnPos.y;
+      return returnPos;
+    };
+    //turning point of switching axes
+    if (((pos.x <= squareWidth))){
+      if (mouseMovement == 'vertical') {
+        slineL = 'left'
+      let returnPos ={
+        x: 0,
+        y: pos.y
+    };
+    line.points()[0] = returnPos.x;
+    line.points()[1] = returnPos.y;
+    return returnPos;
+  } else if (mouseMovement == 'horizontal') {
+    slineL = 'top'
+    let returnPos = {
+      x: pos.x,
+      y: 0,
+    }
+    line.points()[0] = returnPos.x;
+    line.points()[1] = returnPos.y;
+    return returnPos;
+  };
+    } else {
+      if (slineL =='left') {
+        let returnPos = {
+          x: 0,
+          y: pos.y,
+        }
+        line.points()[0] = returnPos.x;
+        line.points()[1] = returnPos.y;
+        return returnPos;
+      } else if (slineL == 'top'){
+        let returnPos ={
+          x: pos.x,
+          y: 0,
+        }
+        line.points()[0] = returnPos.x;
+        line.points()[1] = returnPos.y;
+        return returnPos;
+      }
   
+    }
+  }
 });
 
 const supLineAnchorRight = new Konva.Circle({
   x: stage.width(),
-  y: stage.height(),
+  y: 0,
   radius: 50,
   
   stroke: 'black',
   strokeWidth: 0.5,
   draggable: true,
+  dragBoundFunc: function(pos) {
+    //  setting lines to circles thing
+    let line = supLine;
+    //making sure the right anchor doestt go past the left anchor
+    if (Math.abs(pos.x - line.points()[0]) < squareWidth){
+      let returnPos = {
+        x: supLineAnchorLeft.x() + squareWidth,
+        y: pos.y 
+      };
+      line.points()[2] = returnPos.x;
+      line.points()[3] = returnPos.y;
+      return returnPos;
+    };
+    //turning point of switching axes
+    if (((pos.x >= stage.width() - squareWidth))){
+      if (mouseMovement == 'vertical') {
+        slineR = 'right'
+      let returnPos ={
+        x: stage.width(),
+        y: pos.y
+    };
+    line.points()[2] = returnPos.x;
+    line.points()[3] = returnPos.y;
+    return returnPos;
+  } else if (mouseMovement == 'horizontal') {
+    slineR = 'top'
+    let returnPos = {
+      x: pos.x,
+      y: 0,
+    }
+    line.points()[2] = returnPos.x;
+    line.points()[3] = returnPos.y;
+    return returnPos;
+  };
+    } else {
+      if (slineR =='right') {
+        let returnPos = {
+          x: stage.width(),
+          y: pos.y,
+        }
+        line.points()[2] = returnPos.x;
+        line.points()[3] = returnPos.y;
+        return returnPos;
+      } else if (slineR == 'top'){
+        let returnPos ={
+          x: pos.x,
+          y: 0,
+        }
+        line.points()[2] = returnPos.x;
+        line.points()[3] = returnPos.y;
+        return returnPos;
+      }
   
+    }
+  }
 })
 demAndSupLinesLayer.add(supLineAnchorRight);
 
@@ -148,17 +256,19 @@ demAndSupLinesLayer.add(demLineAnchorLeft);
 
 const demLineAnchorRight = new Konva.Circle({
   x: stage.width(),
-  y: 0,
+  y: stage.height(),
   radius: 50,
   
   stroke: 'black',
   strokeWidth: 0.5,
   draggable: true,
+
+  //dragging function!!
   dragBoundFunc: function(pos) {
     //  setting lines to circles thing
     let line = demLine;
     //making sure the right anchor doestt go past the left anchor
-    if (Math.abs(pos.x - demLineAnchorLeft.x()) < squareWidth){
+    if (Math.abs(pos.x - line.points()[0]) < squareWidth){
       let returnPos = {
         x: demLineAnchorLeft.x() + squareWidth,
         y: pos.y
@@ -172,11 +282,11 @@ const demLineAnchorRight = new Konva.Circle({
       if (mouseMovement == 'vertical') {
         dlineR = 'right'
       let returnPos ={
-        x: 0,
+        x: stage.width(),
         y: pos.y
     };
-    line.points()[0] = returnPos.x;
-    line.points()[1] = returnPos.y;
+    line.points()[2] = returnPos.x;
+    line.points()[3] = returnPos.y;
     return returnPos;
   } else if (mouseMovement == 'horizontal') {
     dlineR = 'bottom'
@@ -184,26 +294,26 @@ const demLineAnchorRight = new Konva.Circle({
       x: pos.x,
       y: stage.height()
     }
-    line.points()[0] = returnPos.x;
-    line.points()[1] = returnPos.y;
+    line.points()[2] = returnPos.x;
+    line.points()[3] = returnPos.y;
     return returnPos;
   };
     } else {
-      if (slineL =='left') {
+      if (dlineR =='right') {
         let returnPos = {
-          x: 0,
+          x: stage.width(),
           y: pos.y,
         }
-        line.points()[0] = returnPos.x;
-        line.points()[1] = returnPos.y;
+        line.points()[2] = returnPos.x;
+        line.points()[3] = returnPos.y;
         return returnPos;
-      } else if (slineL == 'bottom'){
+      } else if (dlineR == 'bottom'){
         let returnPos ={
           x: pos.x,
           y: stage.height(),
         }
-        line.points()[0] = returnPos.x;
-        line.points()[1] = returnPos.y;
+        line.points()[2] = returnPos.x;
+        line.points()[3] = returnPos.y;
         return returnPos;
       }
   
