@@ -601,13 +601,7 @@ stage.draw();
 function findYofNewEq(){
   var puX = puEquilbrium.x();
   var puY = puEquilbrium.y();
- invisLine = new Konva.Line({
-points: [puX, puY-10, puX, stage.height()],
-opacity: 0,
-stroke: 'black',
-stroke: 2,
-});
-taxLayer.add(invisLine);
+ 
 taxLayer.batchDraw();
 
 var slopeNewTax = findPoints(supLineUnitTax, invisLine)[2];
@@ -1056,6 +1050,8 @@ stage.add(taxLayer);
 prodSurplus.moveToBottom();
 equilibrium.moveToTop();
 stage.draw();
+
+
 // SECTION functino that's originally run when tax is implemented
 function whenTaxTrue(){
 
@@ -1076,30 +1072,37 @@ function whenTaxTrue(){
 
 // half Pu equilbrium (half opoacity)
 
-  var pux = findPoints(supLineUnitTax, supLine)[0];
-  var puy = findPoints(supLineUnitTax, supLine)[1];
-    puEquilbrium = new Konva.Circle({
-    radius: 10,
-    fill: "#ABFF4F",
-    x: pux,
-    y: puy,
-    opacity: 0.6,
-  });
-
-  taxLayer.add(puEquilbrium);
-  taxLayer.draw();
+  
 
   //full opacity puEq
-console.log(puEquilbrium.x());
+//finding the puEQ in a new way!!
+//slopeOfDem = (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]);
+//yIntOfDem = demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0]);
+
+//slopeOfNewSup = (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]);
+//yIntOfNewSup = supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0]);
+var puEQx = ((supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0])) - (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])))/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) - (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]));
+var puEQy = (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * puEQx + (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0]));
+
    newPuEq = new Konva.Circle({
-    x: findYofNewEq()[0],
-    y: findYofNewEq()[1],
+    x: ((supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0])) - (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])))/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) - (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0])),
+    y: (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * this.x() + (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])),
     radius: 10,
     fill: '#ABFF4F',
     opacity: 1,
   });
   
-  
+
+    puEquilbrium = new Konva.Circle({
+    radius: 10,
+    fill: "#ABFF4F",
+    x: newPuEq.x(),
+    y: newPuEq.y() + unitTax,
+    opacity: 0.6,
+  });
+
+  taxLayer.add(puEquilbrium);
+  taxLayer.draw();
   taxLayer.add(newPuEq);
 
 
