@@ -49,63 +49,25 @@ var dlineR = 'bottom';
 document.addEventListener('mousemove', function(event) {
     let currentX = event.clientX;
     let currentY = event.clientY;
-
-    if (currentX > prevX + squareWidth) {
-        mouseMovement = 'right';
-    } else if (currentX < prevX + squareWidth) {
-        mouseMovement = 'left'
-    }
-
-    if (currentY > prevY + squareWidth) {
-        mouseMovement = 'down'
-    } else if (currentY < prevY + squareWidth) {
-        mouseMovement = 'up'
-    }
-
-    // Update previous position
-    prevX = currentX;
-    prevY = currentY;
+   if ((Math.abs(currentX-prevX) > Math.abs(currentY-prevY))) {
+    mouseMovement = 'horizontal';
+   } else {
+     mouseMovement = 'vertical';
+   }
+   prevX = currentX;
+   prevY = currentY;
 });
 
 
-const supLineAnchorLeft = new Konva.Circle({
+const demLineAnchorLeft = new Konva.Circle({
   x: 0,
   y: 0,
   radius: 50,
-  stroke: 'black',
+  stroke: 'red',
   strokeWidth: 0.5,
   draggable: true,
-  dragBoundFunction: (pos) => {
-    
-    if (((pos.x = 0))){
-      if (mouseMovement = 'up') {
-        slineR = 'left'
-      return{
-        x: 0,
-        y: pos.y
-    } 
-  } else if (mouseMovement = 'right') {
-    slineR = 'bottom'
-    return {
-      x: pos.x,
-      y: 0
-    }
-  };
-    } else {
-      if (slineR = 'left') {
-        return {
-          x: 0,
-          y: pos.y,
-        }
-      } else if (slineR = 'bottom'){
-        return {
-          x: pos.x,
-          y: 0,
-        }
-      }
-    }
-  }
-})
+  
+});
 
 const supLineAnchorRight = new Konva.Circle({
   x: stage.width(),
@@ -114,19 +76,52 @@ const supLineAnchorRight = new Konva.Circle({
   
   stroke: 'black',
   strokeWidth: 0.5,
-  draggable: true
+  draggable: true,
+  
 })
 demAndSupLinesLayer.add(supLineAnchorRight);
 
 
-const demLineAnchorLeft = new Konva.Circle({
+const supLineAnchorLeft = new Konva.Circle({
   x: 0,
   y: stage.height(),
   radius: 50,
   
   stroke: 'black',
   strokeWidth: 0.5,
-  draggable: true
+  draggable: true,
+  dragBoundFunc: function(pos) {
+    
+    if (((pos.x == 0))){
+      if (mouseMovement == 'vertical') {
+        slineR = 'left'
+      return{
+        x: 0,
+        y: pos.y
+    } 
+  } else if (mouseMovement == 'horizontal') {
+    slineR = 'bottom'
+    return {
+      x: pos.x,
+      y: stage.height()
+    }
+  };
+    } else {
+      if (slineR =='left') {
+        return {
+          x: 0,
+          y: pos.y,
+        }
+      } else if (slineR == 'bottom'){
+        return {
+          x: pos.x,
+          y: stage.height(),
+        }
+      }
+    }
+    console.log(slineR);
+
+  }
 })
 demAndSupLinesLayer.add(demLineAnchorLeft);
 
@@ -684,73 +679,7 @@ movePuEquilibrium();
 }
 //demLineFunction
 
-demLineAnchorLeft.on('dragmove', function () {
-  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
-  remapEquilibrium();
-  putInMRS();
-  updateProdSurplus();
-  
-  
 
-
-});
-
-demLineAnchorRight.on('dragmove', function () {
-  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
-  remapEquilibrium();
-  putInMRS();
-  updateProdSurplus();
-  
-  
-});
-
-supLineAnchorLeft.on('dragmove', function () {
-  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
-  remapEquilibrium();
-  putInMRS();
-  updateProdSurplus();
-  
- 
-});
-
-supLineAnchorRight.on('dragmove', function () {
-  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
-  remapEquilibrium();
-  putInMRS();
-  updateProdSurplus();
-  
-});
-
-demLineAnchorLeft.on('dragend', function () {
-  resetAnchor(demLineAnchorLeft, demLineAnchorRight, demLine);
-  //remapEquilibrium();
-  putInMRS();
-  updateProdSurplus();
-  
-  
-});
-
-demLineAnchorRight.on('dragend', function () {
-  resetAnchor(demLineAnchorLeft, demLineAnchorRight, demLine);
-  //remapEquilibrium();
-  putInMRS();
-  updateProdSurplus();
-  
-});
-
-supLineAnchorLeft.on('dragend', function () {
-  resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
-  //remapEquilibrium();
-  putInMRS();
-  
-});
-
-supLineAnchorRight.on('dragend', function () {
-  resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
-  //remapEquilibrium();
-  putInMRS();
-  
-});
 
   var cds = new Konva.Text({
     x: 0,
@@ -774,7 +703,7 @@ function delayedShow(){
     var x = pointerPos.x;
     var y = pointerPos.y;
     cds.text((Math.round(x)) + "," + (Math.round(500 - y)));
-    console.log(x);
+
     if (x > stage.width()/2){
       x = x - 20;
     } else {
@@ -789,10 +718,9 @@ function delayedShow(){
       cds.x(x);
       cds.y(y);
       
-      console.log(pointerPos);
+      
       frontLayer.batchDraw();
     
-    console.log("mouse over ran");
     cds.moveToTop();
 }
 }
@@ -843,7 +771,7 @@ var newNewPoints = [0, stage.height(), 0, equilibrium.y(), equilibrium.x(), equi
 
   prodSurplus.points(newNewPoints);
   
-  console.log("updated prodSurplus");
+
   
   taxLayer.batchDraw();
   var points = [0, 0, supLine.points()[0], supLine.points()[1], equilibrium.x(), equilibrium.y(), 0, equilibrium.y()];
@@ -886,7 +814,6 @@ function moveDownLines(line){
     demLine.points[0] = demLine.points[0] - squareWidth;
     demLine.points[2] = demLine.points[0] - squareWidth;
   }
-  console.log('movedown')
   }
 
 
@@ -920,13 +847,10 @@ var demandElasticity = percentChangeQ / percentChangeP;
 var measureElasticityDem;
 if (demandElasticity > 1){
    measureElasticityDem = "inelastic";
-   console.log("elastic");
 } else if (demandElasticity < 1){
    measureElasticityDem = "elastic";
-   console.log("inelastic");
 } else {
    measureElasticityDem = "unit elastic";
-   console.log("unit elastic");
 }
 
 console.log("Price Elasticity of Demand: ", demandElasticity);
