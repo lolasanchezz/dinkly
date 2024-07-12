@@ -91,35 +91,56 @@ const supLineAnchorLeft = new Konva.Circle({
   strokeWidth: 0.5,
   draggable: true,
   dragBoundFunc: function(pos) {
-    
-    if (((pos.x == 0))){
+    //  setting lines to circles thing
+    let line = supLine;
+
+    if (((pos.x <= squareWidth))){
       if (mouseMovement == 'vertical') {
-        slineR = 'left'
-      return{
+        slineL = 'left'
+      let returnPos ={
         x: 0,
         y: pos.y
-    } 
+    };
+    line.points()[0] = returnPos.x;
+    line.points()[1] = returnPos.y;
+    return returnPos;
   } else if (mouseMovement == 'horizontal') {
-    slineR = 'bottom'
-    return {
+    slineL = 'bottom'
+    let returnPos = {
       x: pos.x,
       y: stage.height()
     }
+    line.points()[0] = returnPos.x;
+    line.points()[1] = returnPos.y;
+    return returnPos;
   };
     } else {
-      if (slineR =='left') {
-        return {
+      if (slineL =='left') {
+        let returnPos = {
           x: 0,
           y: pos.y,
         }
-      } else if (slineR == 'bottom'){
-        return {
+        line.points()[0] = returnPos.x;
+        line.points()[1] = returnPos.y;
+        return returnPos;
+      } else if (slineL == 'bottom'){
+        let returnPos ={
           x: pos.x,
           y: stage.height(),
         }
+        line.points()[0] = returnPos.x;
+        line.points()[1] = returnPos.y;
+        return returnPos;
       }
+
     }
-    console.log(slineR);
+    //end of setting lines to circles thing
+
+
+
+
+
+
 
   }
 })
@@ -132,19 +153,74 @@ const demLineAnchorRight = new Konva.Circle({
   
   stroke: 'black',
   strokeWidth: 0.5,
-  draggable: true
-})
+  draggable: true,
+  dragBoundFunc: function(pos) {
+    //  setting lines to circles thing
+    let line = demLine;
+    //making sure the right anchor doestt go past the left anchor
+    if (Math.abs(pos.x - demLineAnchorLeft.x()) < squareWidth){
+      let returnPos = {
+        x: demLineAnchorLeft.x() + squareWidth,
+        y: pos.y
+      };
+      line.points()[0] = returnPos.x;
+      line.points()[1] = returnPos.y;
+      return returnPos;
+    };
+    //turning point of switching axes
+    if (((pos.x >= stage.width() - squareWidth))){
+      if (mouseMovement == 'vertical') {
+        dlineR = 'right'
+      let returnPos ={
+        x: 0,
+        y: pos.y
+    };
+    line.points()[0] = returnPos.x;
+    line.points()[1] = returnPos.y;
+    return returnPos;
+  } else if (mouseMovement == 'horizontal') {
+    dlineR = 'bottom'
+    let returnPos = {
+      x: pos.x,
+      y: stage.height()
+    }
+    line.points()[0] = returnPos.x;
+    line.points()[1] = returnPos.y;
+    return returnPos;
+  };
+    } else {
+      if (slineL =='left') {
+        let returnPos = {
+          x: 0,
+          y: pos.y,
+        }
+        line.points()[0] = returnPos.x;
+        line.points()[1] = returnPos.y;
+        return returnPos;
+      } else if (slineL == 'bottom'){
+        let returnPos ={
+          x: pos.x,
+          y: stage.height(),
+        }
+        line.points()[0] = returnPos.x;
+        line.points()[1] = returnPos.y;
+        return returnPos;
+      }
+  
+    }
+  }
+});
 demAndSupLinesLayer.add(demLineAnchorRight);
 
 
 
-var supLine = new Konva.Line({
+var demLine = new Konva.Line({
   points: [0, 0, stage.width(), stage.height()],
   stroke: "black",
   strokeWidth: 2,
   listening: true,
 });
-var demLine = new Konva.Line({
+var supLine = new Konva.Line({
   points: [0, stage.height(), stage.width(), 0],
   stroke: "black",
   strokeWidth: 2,
@@ -1072,7 +1148,6 @@ demLine.on('mouseout', function () {
 
 
 function catSpeak(area){
-  console.log("cat speaking");
   
 if (area === 'consSurplus'){
   document.getElementById("chatText").textContent = "this is consumer surplus. the distance between the demand line and the equilibrium, the market price, represents how much the consumer is underpaying for the product in proportion to the happiness they recieve from it.";
@@ -1098,15 +1173,13 @@ document.getElementById("catModel").src = "assets/dinklyCatShrugging.gltf";
 catNoise.play();
 }
 function resetCatSpeak(){
-  console.log("cat stopped speaking");
   document.getElementById("chatText").textContent = "meow meow meow";
   document.getElementById("catModel").src = "assets/dinklyCat.gltf";
   catNoise.pause();
 }
 
 function submitClicked(){
-  if (document.getElementById("taxInput").value == ""){
-    console.log("submitClicked run")
+  if (document.getElementById("t axInput").value == ""){
     return;
   } else {
     unitTax = document.getElementById("taxInput").value;
