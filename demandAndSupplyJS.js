@@ -63,20 +63,27 @@ const demLineAnchorLeft = new Konva.Circle({
   x: 0,
   y: 0,
   radius: 50,
-  stroke: 'red',
-  strokeWidth: 0.5,
+  stroke: 'black',
+  strokeWidth: 1,
   draggable: true,
   dragBoundFunc: function(pos) {
     //  setting lines to circles thing
     let line = demLine;
+    let endFunction = function(x,y, returnPos){
+      line.points()[x] = returnPos.x;
+      line.points()[y] = returnPos.y;
+      remapEquilibrium();
+      updateProdSurplus();
+      putInMRS();
+      taxLayer.batchDraw();
+    };
     //making sure the right anchor doestt go past the left anchor
-    if (pos.x < squareWidth){
+    if (pos.x > demLineAnchorRight.x() - squareWidth){
       let returnPos = {
         x: demLineAnchorRight.x() - squareWidth,
         y: pos.y
       };
-      line.points()[0] = returnPos.x;
-      line.points()[1] = returnPos.y;
+      endFunction(0,1, returnPos);
       return returnPos;
     };
     //turning point of switching axes
@@ -87,8 +94,7 @@ const demLineAnchorLeft = new Konva.Circle({
         x: 0,
         y: pos.y
     };
-    line.points()[0] = returnPos.x;
-    line.points()[1] = returnPos.y;
+    endFunction(0,1, returnPos);
     return returnPos;
   } else if (mouseMovement == 'horizontal') {
     slineL = 'top'
@@ -96,8 +102,7 @@ const demLineAnchorLeft = new Konva.Circle({
       x: pos.x,
       y: 0,
     }
-    line.points()[0] = returnPos.x;
-    line.points()[1] = returnPos.y;
+    endFunction(0,1, returnPos);
     return returnPos;
   };
     } else {
@@ -106,17 +111,15 @@ const demLineAnchorLeft = new Konva.Circle({
           x: 0,
           y: pos.y,
         }
-        line.points()[0] = returnPos.x;
-        line.points()[1] = returnPos.y;
+        endFunction(0,1, returnPos);
         return returnPos;
       } else if (slineL == 'top'){
         let returnPos ={
           x: pos.x,
           y: 0,
         }
-        line.points()[0] = returnPos.x;
-        line.points()[1] = returnPos.y;
-        return returnPos;
+        endFunction(0,1, returnPos);
+      return returnPos;
       }
   
     }
@@ -953,15 +956,21 @@ supLineAnchorRight.on('mouseout', function(){
 
 function updateProdSurplus(){
 
-var newNewPoints = [0, stage.height(), 0, equilibrium.y(), equilibrium.x(), equilibrium.y(), demLine.points()[0], demLine.points()[1]];
-
-  prodSurplus.points(newNewPoints);
+var newNewPoints = [0, 0, 0, equilibrium.y(), equilibrium.x(), equilibrium.y(), demLine.points()[0], demLine.points()[1]];
+//TODO figure out why this breaks the demand line movement??????? huh????????????????????????????????
+/*
+if ((demLine.points()[0] = 0)&&(demLine.points()[1]>0)){
+  newNewPoints[0] = demLine.points()[0];
+  newNewPoints[1] = demLine.points()[1];
+}
+  */
+  consSurplus.points(newNewPoints);
   
 
   
   taxLayer.batchDraw();
   var points = [0, 0, supLine.points()[0], supLine.points()[1], equilibrium.x(), equilibrium.y(), 0, equilibrium.y()];
-  consSurplus.points(points);
+  prodSurplus.points(points);
   if (taxShown){
     consSurplus.points()[4] = puEquilbrium.x();
     consSurplus.points()[5] = puEquilbrium.y();
