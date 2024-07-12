@@ -137,14 +137,23 @@ const supLineAnchorRight = new Konva.Circle({
   dragBoundFunc: function(pos) {
     //  setting lines to circles thing
     let line = supLine;
+
+    let endFunction = function(x,y, returnPos){
+      line.points()[x] = returnPos.x;
+      line.points()[y] = returnPos.y;
+      remapEquilibrium();
+      updateProdSurplus();
+      putInMRS();
+      taxLayer.batchDraw();
+    };
+    
     //making sure the right anchor doestt go past the left anchor
     if (Math.abs(pos.x - line.points()[0]) < squareWidth){
       let returnPos = {
         x: supLineAnchorLeft.x() + squareWidth,
         y: pos.y 
       };
-      line.points()[2] = returnPos.x;
-      line.points()[3] = returnPos.y;
+      endFunction(2,3, returnPos);
       return returnPos;
     };
     //turning point of switching axes
@@ -155,8 +164,7 @@ const supLineAnchorRight = new Konva.Circle({
         x: stage.width(),
         y: pos.y
     };
-    line.points()[2] = returnPos.x;
-    line.points()[3] = returnPos.y;
+    endFunction(2,3, returnPos);
     return returnPos;
   } else if (mouseMovement == 'horizontal') {
     slineR = 'top'
@@ -164,8 +172,7 @@ const supLineAnchorRight = new Konva.Circle({
       x: pos.x,
       y: 0,
     }
-    line.points()[2] = returnPos.x;
-    line.points()[3] = returnPos.y;
+    endFunction(2,3, returnPos);
     return returnPos;
   };
     } else {
@@ -174,16 +181,14 @@ const supLineAnchorRight = new Konva.Circle({
           x: stage.width(),
           y: pos.y,
         }
-        line.points()[2] = returnPos.x;
-        line.points()[3] = returnPos.y;
+        endFunction(2,3, returnPos);
         return returnPos;
       } else if (slineR == 'top'){
         let returnPos ={
           x: pos.x,
           y: 0,
         }
-        line.points()[2] = returnPos.x;
-        line.points()[3] = returnPos.y;
+        endFunction(2,3, returnPos);
         return returnPos;
       }
   
@@ -204,7 +209,14 @@ const supLineAnchorLeft = new Konva.Circle({
   dragBoundFunc: function(pos) {
     //  setting lines to circles thing
     let line = supLine;
-
+    let endFunction = function(x,y, returnPos){
+      line.points()[x] = returnPos.x;
+      line.points()[y] = returnPos.y;
+      remapEquilibrium();
+      updateProdSurplus();
+      putInMRS();
+      taxLayer.batchDraw();
+    };
     if (((pos.x <= squareWidth))){
       if (mouseMovement == 'vertical') {
         slineL = 'left'
@@ -212,8 +224,7 @@ const supLineAnchorLeft = new Konva.Circle({
         x: 0,
         y: pos.y
     };
-    line.points()[0] = returnPos.x;
-    line.points()[1] = returnPos.y;
+    endFunction(0,1, returnPos);
     return returnPos;
   } else if (mouseMovement == 'horizontal') {
     slineL = 'bottom'
@@ -221,8 +232,7 @@ const supLineAnchorLeft = new Konva.Circle({
       x: pos.x,
       y: stage.height()
     }
-    line.points()[0] = returnPos.x;
-    line.points()[1] = returnPos.y;
+    endFunction(0,1, returnPos);
     return returnPos;
   };
     } else {
@@ -231,16 +241,14 @@ const supLineAnchorLeft = new Konva.Circle({
           x: 0,
           y: pos.y,
         }
-        line.points()[0] = returnPos.x;
-        line.points()[1] = returnPos.y;
+        endFunction(0,1, returnPos);
         return returnPos;
       } else if (slineL == 'bottom'){
         let returnPos ={
           x: pos.x,
           y: stage.height(),
         }
-        line.points()[0] = returnPos.x;
-        line.points()[1] = returnPos.y;
+        endFunction(0,1, returnPos);
         return returnPos;
       }
 
@@ -270,15 +278,23 @@ const demLineAnchorRight = new Konva.Circle({
   dragBoundFunc: function(pos) {
     //  setting lines to circles thing
     let line = demLine;
+    let endFunction = function(x,y, returnPos){
+      line.points()[x] = returnPos.x;
+      line.points()[y] = returnPos.y;
+      remapEquilibrium();
+      updateProdSurplus();
+      putInMRS();
+      taxLayer.batchDraw();
+    };
+    
     //making sure the right anchor doestt go past the left anchor
     if (Math.abs(pos.x - line.points()[0]) < squareWidth){
       let returnPos = {
         x: demLineAnchorLeft.x() + squareWidth,
         y: pos.y
       };
-      line.points()[0] = returnPos.x;
-      line.points()[1] = returnPos.y;
-      return returnPos;
+      endFunction(0,1, returnPos);
+    return returnPos;
     };
     //turning point of switching axes
     if (((pos.x >= stage.width() - squareWidth))){
@@ -288,8 +304,7 @@ const demLineAnchorRight = new Konva.Circle({
         x: stage.width(),
         y: pos.y
     };
-    line.points()[2] = returnPos.x;
-    line.points()[3] = returnPos.y;
+    endFunction(2,3, returnPos);
     return returnPos;
   } else if (mouseMovement == 'horizontal') {
     dlineR = 'bottom'
@@ -297,8 +312,7 @@ const demLineAnchorRight = new Konva.Circle({
       x: pos.x,
       y: stage.height()
     }
-    line.points()[2] = returnPos.x;
-    line.points()[3] = returnPos.y;
+    endFunction(2,3, returnPos);
     return returnPos;
   };
     } else {
@@ -307,17 +321,15 @@ const demLineAnchorRight = new Konva.Circle({
           x: stage.width(),
           y: pos.y,
         }
-        line.points()[2] = returnPos.x;
-        line.points()[3] = returnPos.y;
+        endFunction(2,3, returnPos);
         return returnPos;
       } else if (dlineR == 'bottom'){
         let returnPos ={
           x: pos.x,
           y: stage.height(),
         }
-        line.points()[2] = returnPos.x;
-        line.points()[3] = returnPos.y;
-        return returnPos;
+        endFunction(2,3, returnPos);
+    return returnPos;
       }
   
     }
@@ -969,7 +981,7 @@ if ((demLine.points()[0] = 0)&&(demLine.points()[1]>0)){
 
   
   taxLayer.batchDraw();
-  var points = [0, 0, supLine.points()[0], supLine.points()[1], equilibrium.x(), equilibrium.y(), 0, equilibrium.y()];
+  var points = [0, stage.height(), supLine.points()[0], supLine.points()[1], equilibrium.x(), equilibrium.y(), 0, equilibrium.y()];
   prodSurplus.points(points);
   if (taxShown){
     consSurplus.points()[4] = puEquilbrium.x();
@@ -1001,91 +1013,49 @@ if ((demLine.points()[0] = 0)&&(demLine.points()[1]>0)){
 
 
 
-function moveDownLines(line){
-  if (line === "supLine"){
-    supLine.points[0] = supLine.points[0] - squareWidth;
-    supLine.points[2] = supLine.points[2] - squareWidth;
-  } else {
-    demLine.points[0] = demLine.points[0] - squareWidth;
-    demLine.points[2] = demLine.points[0] - squareWidth;
-  }
-  }
+
 
 
 function putInMRS(){
 var mrsOfDem = document.getElementById("mrsOfDem");
 var mrsOfSup = document.getElementById("mrsOfSup");
 // Extracting the coordinates of the points
-var x1 = supLine.points()[0];
-var y1 = supLine.points()[1];
-var x2 = supLine.points()[2];
-var y2 = supLine.points()[3];
 
-// Calculate the change in quantity demanded
-var deltaQ = y2 - y1;
-var q1 = (y1 + y2) / 2; // Using the average of the initial and final quantity demanded
-
-// Calculate the percentage change in quantity demanded
-var percentChangeQ = (deltaQ / q1) * 100;
-
-// Calculate the change in price
-var deltaP = x2 - x1;
-var p1 = (x1 + x2) / 2; // Using the average of the initial and final price
-
-// Calculate the percentage change in price
-var percentChangeP = (deltaP / p1) * 100;
-
-// Calculate the price elasticity of demand
-var demandElasticity = percentChangeQ / percentChangeP;
+//new quantity is the one at the beginning of the line mesay
+var demandElasticity = (((demLine.points()[2] - demLine.points()[0])/(demLine.points()[2])/2)/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[3] + demLine.points()[1])/2));
 
 // Determine the type of elasticity
 var measureElasticityDem;
 if (demandElasticity > 1){
-   measureElasticityDem = "inelastic";
+   measureElasticityDem = `inelastic (${demandElasticity.toFixed(2)})`
+
 } else if (demandElasticity < 1){
-   measureElasticityDem = "elastic";
+   measureElasticityDem =  `elastic (${demandElasticity.toFixed(2)})`
+   ;
 } else {
    measureElasticityDem = "unit elastic";
 }
 
-console.log("Price Elasticity of Demand: ", demandElasticity);
 
-mrsOfDem.textContent = "demand is: " + measureElasticityDem;;
 
+mrsOfDem.textContent = "demand is: " + measureElasticityDem;
 
 //elasticity of supply
+var supElasticity = (((supLine.points()[2] - supLine.points()[0])/(supLine.points()[2])/2)/((supLine.points()[3] - supLine.points()[1])/(supLine.points()[3] + supLine.points()[1])/2));
 
-x1 = demLine.points()[0];
-y1 = demLine.points()[1];
-x2 = demLine.points()[2];
-y2 = demLine.points()[3];
-
-// Calculate the change in quantity demanded
- deltaQ = y2 - y1;
- q1 = (y1 + y2) / 2; // Using the average of the initial and final quantity demanded
-
-// Calculate the percentage change in quantity demanded
- percentChangeQ = (deltaQ / q1) * 100;
-
-// Calculate the change in price
- deltaP = x2 - x1;
-p1 = (x1 + x2) / 2; // Using the average of the initial and final price
-
-// Calculate the percentage change in price
-percentChangeP = (deltaP / p1) * 100;
-var supplyElasticity = (percentChangeQ / percentChangeP)*-1;
-console.log(supplyElasticity);
+// Determine the type of elasticity
 var measureElasticitySup;
-if (supplyElasticity > 1){
-   measureElasticitySup = "inelastic";
-   console.log("elastic");
-} else if (supplyElasticity < 1){
-   measureElasticitySup = "elastic";
-   console.log("inelastic");
+if (Math.abs(supElasticity) > 1){
+  measureElasticitySup = `inelastic (${Math.abs(supElasticity.toFixed(2))})`
+
+} else if (Math.abs(supElasticity) < 1){
+  measureElasticitySup =  `elastic (${Math.abs(supElasticity.toFixed(2))})`
+   ;
 } else {
-   measureElasticitySup = "unit elastic";
-   console.log("unit elastic");
+  console.log(measureElasticitySup + '33')
+  measureElasticitySup = "unit elastic";
 }
+
 
 
 mrsOfSup.textContent = "supply is " + measureElasticitySup;
@@ -1164,18 +1134,12 @@ backgroundLayer.draw();
 
 
 function resetLines (){
-  supLine.points([0, 0, stage.width(), stage.height()]);
-  demLine.points([0, stage.height(), stage.width(), 0]);
+  supLine.points([0, stage.height(), stage.width(), 0]);
+  demLine.points([0, 0, stage.width(), stage.height()]);
   remapEquilibrium();
   demAndSupLinesLayer.batchDraw();
-  resetAnchor(supLineAnchorLeft, supLineAnchorRight, supLine);
-  resetAnchor(demLineAnchorLeft, demLineAnchorRight, demLine);
-
-  putInMRS();
-  moveBothLines(supLine, supLineAnchorLeft, supLineAnchorRight);
-  moveBothLines(demLine, demLineAnchorLeft, demLineAnchorRight);
-  console.log("lines reset")
-}
+  
+  putInMRS();}
 
 function showStuff(){
 xPos = stage.getRelativePointerPosition().x;
