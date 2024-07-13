@@ -586,32 +586,15 @@ function movePuEquilibrium(){
   equilibrium.fill('gray');
 }
 
- 
-function resetAnchor(anchor1, anchor2, line){
-  anchor1.x(line.points()[0]);
-  anchor2.x(line.points()[2]);
-  anchor1.y(line.points()[1]);
-  anchor2.y(line.points()[3]);
-  
 
-}
+
 stage.add(demAndSupLinesLayer);
 stage.draw();
 
-function findYofNewEq(){
-  var puX = puEquilbrium.x();
-  var puY = puEquilbrium.y();
  
 taxLayer.batchDraw();
 
-var slopeNewTax = findPoints(supLineUnitTax, invisLine)[2];
-var yIntercept = demLine.points()[1] - (slopeNewTax * demLine.points()[0]);
-var y = (slopeNewTax*puX + yIntercept);
-var x = puX;
-console.log(puX);
-console.log(x + y);
-return [x,y];
-}
+
 
 
 taxLayer.batchDraw();
@@ -904,10 +887,27 @@ backgroundLayer.draw();
 function resetLines (){
   supLine.points([0, stage.height(), stage.width(), 0]);
   demLine.points([0, 0, stage.width(), stage.height()]);
+ 
+
+  supLineAnchorLeft.x(0);
+  supLineAnchorLeft.y(stage.height());
+
+  supLineAnchorRight.x(stage.width());
+  supLineAnchorRight.y(0);
+  
+  demLineAnchorLeft.x(0);
+  demLineAnchorLeft.y(0);
+  
+  demLineAnchorRight.x(stage.width());
+  demLineAnchorRight.y(stage.height());
+
+
+
   remapEquilibrium();
   demAndSupLinesLayer.batchDraw();
-  
-  putInMRS();}
+  // ANCHOR add the everything function here
+  putInMRS();
+}
 
 function showStuff(){
 xPos = stage.getRelativePointerPosition().x;
@@ -1085,7 +1085,7 @@ var puEQy = (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - d
 
    newPuEq = new Konva.Circle({
     x: ((supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0])) - (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])))/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) - (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0])),
-    y: (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * this.x() + (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])),
+    y: (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * newPuEq().x + (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])),
     radius: 10,
     fill: '#ABFF4F',
     opacity: 1,
