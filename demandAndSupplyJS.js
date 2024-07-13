@@ -9,6 +9,7 @@ var squareWidth = 25;
 var taxShown = false;
 var unitTax = 100;
 var firstTaxInput = true;
+
 var invisLine;
 var catNoise = new Audio('assets/catNoise.mp3')
 var frontLayer = new Konva.Layer();
@@ -95,6 +96,55 @@ document.addEventListener('mousemove', function(event) {
 
 
 
+//global movement function uphere 
+let endFunction = function(x,y, returnPos, line, anchor){
+  line.points()[x] = returnPos.x;
+  line.points()[y] = returnPos.y;
+  remapEquilibrium();
+  updateProdSurplus();
+  putInMRS();
+  if (taxShown){
+
+  newPuEq.position(returnPuEqPos());
+  taxLayer.batchDraw();
+
+  if (((line = 'supLine')&&(anchor == 'left' )&&(returnPos.x > 0))){
+    x1 = newPuEq.x();
+      x2 = supLine.points()[2];
+      y1 = newPuEq.y();
+      y2 = supLine.points()[3];
+      const xIntercept = (x1, y1, x2, y2) => x1 - (y1 * (x2 - x1)) / (y2 - y1);
+      
+      console.log(newPuEq.y());
+      let supLineX = xIntercept(x1, y1, x2, y2);
+
+    supLineUnitTax.points([
+      supLineX,
+       stage.height(), 
+       supLine.points()[2], 
+       supLine.points()[3] - unitTax
+      ]);
+    console.log("supLine points" + supLineUnitTax.points());
+
+    
+   } else {
+      supLineUnitTax.points([supLine.points()[0], supLine.points()[1] - unitTax, supLine.points()[2], supLine.points()[3] - unitTax]);
+
+      
+      
+    x1 - (y1 * (x2 - x1)) / (y2 - y1);
+
+      
+      
+
+    }
+
+
+  }
+};
+
+
+
 const demLineAnchorLeft = new Konva.Circle({
   x: 0,
   y: 0,
@@ -105,23 +155,14 @@ const demLineAnchorLeft = new Konva.Circle({
   dragBoundFunc: function(pos) {
     //  setting lines to circles thing
     let line = demLine;
-    let endFunction = function(x,y, returnPos){
-      line.points()[x] = returnPos.x;
-      line.points()[y] = returnPos.y;
-      remapEquilibrium();
-      updateProdSurplus();
-      putInMRS();
-      newPuEq.position(returnPuEqPos());
-      
-      taxLayer.batchDraw();
-    };
+  
     //making sure the right anchor doestt go past the left anchor
     if (pos.x > demLineAnchorRight.x() - squareWidth){
       let returnPos = {
         x: demLineAnchorRight.x() - squareWidth,
         y: pos.y
       };
-      endFunction(0,1, returnPos);
+      endFunction(0,1, returnPos, line, 'left');
       return returnPos;
     };
     //turning point of switching axes
@@ -132,7 +173,7 @@ const demLineAnchorLeft = new Konva.Circle({
         x: 0,
         y: pos.y
     };
-    endFunction(0,1, returnPos);
+    endFunction(0,1, returnPos, line, 'left');
     return returnPos;
   } else if (mouseMovement == 'horizontal') {
     slineL = 'top'
@@ -140,7 +181,7 @@ const demLineAnchorLeft = new Konva.Circle({
       x: pos.x,
       y: 0,
     }
-    endFunction(0,1, returnPos);
+    endFunction(0,1, returnPos, line, 'left');
     return returnPos;
   };
     } else {
@@ -149,14 +190,14 @@ const demLineAnchorLeft = new Konva.Circle({
           x: 0,
           y: pos.y,
         }
-        endFunction(0,1, returnPos);
+        endFunction(0,1, returnPos, line, 'left');
         return returnPos;
       } else if (slineL == 'top'){
         let returnPos ={
           x: pos.x,
           y: 0,
         }
-        endFunction(0,1, returnPos);
+        endFunction(0,1, returnPos, line, 'left');
       return returnPos;
       }
   
@@ -178,14 +219,7 @@ const supLineAnchorRight = new Konva.Circle({
     //  setting lines to circles thing
     let line = supLine;
 
-    let endFunction = function(x,y, returnPos){
-      line.points()[x] = returnPos.x;
-      line.points()[y] = returnPos.y;
-      remapEquilibrium();
-      updateProdSurplus();
-      putInMRS();
-      taxLayer.batchDraw();
-    };
+    
     
     //making sure the right anchor doestt go past the left anchor
     if (Math.abs(pos.x - line.points()[0]) < squareWidth){
@@ -193,7 +227,7 @@ const supLineAnchorRight = new Konva.Circle({
         x: supLineAnchorLeft.x() + squareWidth,
         y: pos.y 
       };
-      endFunction(2,3, returnPos);
+      endFunction(2,3, returnPos, line, 'right');
       return returnPos;
     };
     //turning point of switching axes
@@ -204,7 +238,7 @@ const supLineAnchorRight = new Konva.Circle({
         x: stage.width(),
         y: pos.y
     };
-    endFunction(2,3, returnPos);
+    endFunction(2,3, returnPos, line, 'right');
     return returnPos;
   } else if (mouseMovement == 'horizontal') {
     slineR = 'top'
@@ -212,7 +246,7 @@ const supLineAnchorRight = new Konva.Circle({
       x: pos.x,
       y: 0,
     }
-    endFunction(2,3, returnPos);
+    endFunction(2,3, returnPos, line, 'right');
     return returnPos;
   };
     } else {
@@ -221,14 +255,14 @@ const supLineAnchorRight = new Konva.Circle({
           x: stage.width(),
           y: pos.y,
         }
-        endFunction(2,3, returnPos);
+        endFunction(2,3, returnPos, line, 'right');
         return returnPos;
       } else if (slineR == 'top'){
         let returnPos ={
           x: pos.x,
           y: 0,
         }
-        endFunction(2,3, returnPos);
+        endFunction(2,3, returnPos, line, 'right');
         return returnPos;
       }
   
@@ -250,14 +284,7 @@ const supLineAnchorLeft = new Konva.Circle({
   dragBoundFunc: function(pos) {
     //  setting lines to circles thing
     let line = supLine;
-    let endFunction = function(x,y, returnPos){
-      line.points()[x] = returnPos.x;
-      line.points()[y] = returnPos.y;
-      remapEquilibrium();
-      updateProdSurplus();
-      putInMRS();
-      taxLayer.batchDraw();
-    };
+    
     if (((pos.x <= squareWidth))){
       if (mouseMovement == 'vertical') {
         slineL = 'left'
@@ -265,7 +292,7 @@ const supLineAnchorLeft = new Konva.Circle({
         x: 0,
         y: pos.y
     };
-    endFunction(0,1, returnPos);
+    endFunction(0,1, returnPos, line, 'left');
     return returnPos;
   } else if (mouseMovement == 'horizontal') {
     slineL = 'bottom'
@@ -273,7 +300,7 @@ const supLineAnchorLeft = new Konva.Circle({
       x: pos.x,
       y: stage.height()
     }
-    endFunction(0,1, returnPos);
+    endFunction(0,1, returnPos, line, 'left');
     return returnPos;
   };
     } else {
@@ -282,14 +309,14 @@ const supLineAnchorLeft = new Konva.Circle({
           x: 0,
           y: pos.y,
         }
-        endFunction(0,1, returnPos);
+        endFunction(0,1, returnPos, line, 'left');
         return returnPos;
       } else if (slineL == 'bottom'){
         let returnPos ={
           x: pos.x,
           y: stage.height(),
         }
-        endFunction(0,1, returnPos);
+        endFunction(0,1, returnPos, line, 'left');
         return returnPos;
       }
       
@@ -319,14 +346,6 @@ const demLineAnchorRight = new Konva.Circle({
   dragBoundFunc: function(pos) {
     //  setting lines to circles thing
     let line = demLine;
-    let endFunction = function(x,y, returnPos){
-      line.points()[x] = returnPos.x;
-      line.points()[y] = returnPos.y;
-      remapEquilibrium();
-      updateProdSurplus();
-      putInMRS();
-      taxLayer.batchDraw();
-    };
     
     //making sure the right anchor doestt go past the left anchor
     if (Math.abs(pos.x - line.points()[0]) < squareWidth){
@@ -334,7 +353,7 @@ const demLineAnchorRight = new Konva.Circle({
         x: demLineAnchorLeft.x() + squareWidth,
         y: pos.y
       };
-      endFunction(0,1, returnPos);
+      endFunction(0,1, returnPos, line, 'right');
     return returnPos;
     };
     //turning point of switching axes
@@ -345,7 +364,7 @@ const demLineAnchorRight = new Konva.Circle({
         x: stage.width(),
         y: pos.y
     };
-    endFunction(2,3, returnPos);
+    endFunction(2,3, returnPos, line, 'right');
     return returnPos;
   } else if (mouseMovement == 'horizontal') {
     dlineR = 'bottom'
@@ -353,7 +372,7 @@ const demLineAnchorRight = new Konva.Circle({
       x: pos.x,
       y: stage.height()
     }
-    endFunction(2,3, returnPos);
+    endFunction(2,3, returnPos, line, 'right');
     return returnPos;
   };
     } else {
@@ -362,14 +381,14 @@ const demLineAnchorRight = new Konva.Circle({
           x: stage.width(),
           y: pos.y,
         }
-        endFunction(2,3, returnPos);
+        endFunction(2,3, returnPos, line, 'right');
         return returnPos;
       } else if (dlineR == 'bottom'){
         let returnPos ={
           x: pos.x,
           y: stage.height(),
         }
-        endFunction(2,3, returnPos);
+        endFunction(2,3, returnPos, line, 'right');
     return returnPos;
       }
   
@@ -622,11 +641,6 @@ taxLayer.batchDraw();
 
 taxLayer.batchDraw();
 
-function updateNewPuEq(){
-  newPuEq.x(findYofNewEq()[0]);
-  newPuEq.y(findYofNewEq()[1]);
-  newPuEq.opacity(1);
-}
 
 
 
@@ -1073,6 +1087,8 @@ stage.draw();
 
 
 // SECTION functino that's originally run when tax is implemented
+
+
 function whenTaxTrue(){
 
   if (firstTaxInput){
@@ -1092,17 +1108,6 @@ function whenTaxTrue(){
 
 // half Pu equilbrium (half opoacity)
 
-  
-
-  //full opacity puEq
-//finding the puEQ in a new way!!
-//slopeOfDem = (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]);
-//yIntOfDem = demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0]);
-
-//slopeOfNewSup = (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]);
-//yIntOfNewSup = supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0]);
-//var puEQx = ((supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0])) - (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])))/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) - (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]));
-//var puEQy = (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * puEQx + (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0]));
 
    newPuEq = new Konva.Circle({
     x: ((supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0])) - (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])))/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) - (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0])),
