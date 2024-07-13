@@ -35,9 +35,44 @@ var stage = new Konva.Stage({
   id: "konvaStage", 
 });
 
+var demLine = new Konva.Line({
+  points: [0, 0, stage.width(), stage.height()],
+  stroke: "black",
+  strokeWidth: 2,
+  listening: true,
+});
+var supLine = new Konva.Line({
+  points: [0, stage.height(), stage.width(), 0],
+  stroke: "black",
+  strokeWidth: 2,
+  listening: true,
+});
+
+var equilibrium = new Konva.Circle({
+  x: stage.width() / 2,
+  y: stage.height() / 2,
+  radius: 10,
+  fill: "#ABFF4F"
+  
+});
+
+var returnPuEqPos = () => {
+  
+  var newObj = {
+  x: (((supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0])) - (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])))/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) - (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]))),
+  y: ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * (     
+
+    ((supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0])) - (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])))/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) - (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]))
+  ) + (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0]))),
+};
 
 
 
+
+var returnNewPuEqPos = () => {
+};
+return newObj;
+};
 //function for seeing which way the mouse is moving
 let prevX = 0;
 let prevY = 0;
@@ -59,6 +94,7 @@ document.addEventListener('mousemove', function(event) {
 });
 
 
+
 const demLineAnchorLeft = new Konva.Circle({
   x: 0,
   y: 0,
@@ -75,6 +111,8 @@ const demLineAnchorLeft = new Konva.Circle({
       remapEquilibrium();
       updateProdSurplus();
       putInMRS();
+      newPuEq.position(returnPuEqPos());
+      
       taxLayer.batchDraw();
     };
     //making sure the right anchor doestt go past the left anchor
@@ -123,7 +161,9 @@ const demLineAnchorLeft = new Konva.Circle({
       }
   
     }
+    taxLayer.draw();
   }
+  
 });
 
 const supLineAnchorRight = new Konva.Circle({
@@ -193,6 +233,7 @@ const supLineAnchorRight = new Konva.Circle({
       }
   
     }
+    taxLayer.draw();
   }
 })
 demAndSupLinesLayer.add(supLineAnchorRight);
@@ -251,10 +292,10 @@ const supLineAnchorLeft = new Konva.Circle({
         endFunction(0,1, returnPos);
         return returnPos;
       }
-
+      
     }
     //end of setting lines to circles thing
-
+    taxLayer.draw();
 
 
 
@@ -333,32 +374,14 @@ const demLineAnchorRight = new Konva.Circle({
       }
   
     }
+    taxLayer.draw();
   }
 });
 demAndSupLinesLayer.add(demLineAnchorRight);
 
 
 
-var demLine = new Konva.Line({
-  points: [0, 0, stage.width(), stage.height()],
-  stroke: "black",
-  strokeWidth: 2,
-  listening: true,
-});
-var supLine = new Konva.Line({
-  points: [0, stage.height(), stage.width(), 0],
-  stroke: "black",
-  strokeWidth: 2,
-  listening: true,
-});
 
-var equilibrium = new Konva.Circle({
-  x: stage.width() / 2,
-  y: stage.height() / 2,
-  radius: 10,
-  fill: "#ABFF4F"
-  
-});
 
 stage.add(frontLayer);
 
@@ -803,7 +826,6 @@ if (Math.abs(supElasticity) > 1){
   measureElasticitySup =  `elastic (${Math.abs(supElasticity.toFixed(2))})`
    ;
 } else {
-  console.log(measureElasticitySup + '33')
   measureElasticitySup = "unit elastic";
 }
 
@@ -844,8 +866,7 @@ var coordsBox = new Konva.Rect({
 
 
 function createNumbsForXAxis(xPos){
-  console.log(xPos);
-  console.log(xPos.toString());
+  
   return new Konva.Text({ 
     x: xPos,
     y: stage.height()-10,
@@ -1080,12 +1101,16 @@ function whenTaxTrue(){
 
 //slopeOfNewSup = (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]);
 //yIntOfNewSup = supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0]);
-var puEQx = ((supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0])) - (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])))/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) - (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]));
-var puEQy = (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * puEQx + (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0]));
+//var puEQx = ((supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0])) - (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])))/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) - (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]));
+//var puEQy = (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * puEQx + (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0]));
 
    newPuEq = new Konva.Circle({
     x: ((supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0])) - (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])))/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) - (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0])),
-    y: (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * newPuEq().x + (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])),
+    y: (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * (     
+
+      ((supLineUnitTax.points()[1] - ((supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]) * supLineUnitTax.points()[0])) - (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])))/((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) - (supLineUnitTax.points()[3] - supLineUnitTax.points()[1])/(supLineUnitTax.points()[2] - supLineUnitTax.points()[0]))
+
+    ) + (demLine.points()[1] - ((demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - demLine.points()[0]) * demLine.points()[0])),
     radius: 10,
     fill: '#ABFF4F',
     opacity: 1,
@@ -1096,7 +1121,8 @@ var puEQy = (demLine.points()[3] - demLine.points()[1])/(demLine.points()[2] - d
     radius: 10,
     fill: "#ABFF4F",
     x: newPuEq.x(),
-    y: newPuEq.y() + unitTax,
+    //LMAOOOO WHATTTT THERE IS NO WAYYYY OHHH MY GOAADDDD 
+    y: newPuEq.y() + squareWidth* (unitTax/squareWidth),
     opacity: 0.6,
   });
 
