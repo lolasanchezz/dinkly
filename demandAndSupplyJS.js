@@ -39,13 +39,13 @@ var stage = new Konva.Stage({
 var demLine = new Konva.Line({
   points: [0, 0, stage.width(), stage.height()],
   stroke: "black",
-  strokeWidth: 2,
+  strokeWidth: 3,
   listening: true,
 });
 var supLine = new Konva.Line({
   points: [0, stage.height(), stage.width(), 0],
   stroke: "black",
-  strokeWidth: 2,
+  strokeWidth: 3,
   listening: true,
 });
 
@@ -103,6 +103,7 @@ let endFunction = function(x,y, returnPos, line, anchor){
   remapEquilibrium();
   updateProdSurplus();
   putInMRS();
+  updatingLabels();
   if (taxShown){
 
   newPuEq.position(returnPuEqPos());
@@ -150,7 +151,7 @@ const demLineAnchorLeft = new Konva.Circle({
   y: 0,
   radius: 50,
   stroke: 'black',
-  strokeWidth: 1,
+  strokeWidth: 0.5,
   draggable: true,
   dragBoundFunc: function(pos) {
     //  setting lines to circles thing
@@ -558,7 +559,15 @@ function generatingShapesWhileLoop() {
 
 
 
+function updatingLabels(){
+  
+  csuLabel.y((consSurplus.points()[5] - csuLabel.fontSize()));
+  var y = prodSurplus.points()[5];
+  psuLabel.y(y);
+  stage.draw();
+  console.log('raewn');
 
+};
 
 
 
@@ -570,12 +579,11 @@ demAndSupLinesLayer.add(demLineAnchorRight);
 var isSupLine;
 
 var csuLabel = new Konva.Text({
-  x: 0,
-  y: consSurplus.points()[7],
+  x: consSurplus.points()[4],
+  y: (consSurplus.points()[5]-20),
   text: 'consumer surplus',
   fill: 'white',
   fontSize: 20,
-  opacity: 0,
   });
   
   
@@ -587,7 +595,6 @@ var csuLabel = new Konva.Text({
     text: 'producer surplus',
     fill: 'white',
     fontSize: 20,
-    opacity: 0,
     });
 
 
@@ -665,8 +672,7 @@ updateProdSurplus();
 updateProdSurplus();
 // deadweight loss
 var dwlPoints = [puEquilbrium.x(), puEquilbrium.y(), equilibrium.x(), equilibrium.y(), newPuEq.x(), newPuEq.y()];
-console.log("dwl points" + dwlPoints);
-dwl.opacity(0.5);
+
 dwl.points(dwlPoints);
 
 //labels
@@ -870,13 +876,7 @@ var coords = new Konva.Text({
   isVisible: false,
 });
 
-var coordsBox = new Konva.Rect({
-  x: 0,
-  y: 0,
-  width: (coords.width() + 5),
-  height: (coords.height() + 5),
-  isVisible: false,
-})
+
 
 
 function createNumbsForXAxis(xPos){
@@ -1033,31 +1033,7 @@ demLine.on('mouseout', function () {
 
 
 
-function catSpeak(area){
-  
-if (area === 'consSurplus'){
-  document.getElementById("chatText").textContent = "this is consumer surplus. the distance between the demand line and the equilibrium, the market price, represents how much the consumer is underpaying for the product in proportion to the happiness they recieve from it.";
-} else if (area === 'prodSurplus'){
-  document.getElementById("chatText").textContent = "this is producer surplus. the distance between the supply line and the equilibrium, the market price, represents how much net profit the producer is making."
-} else if (area === 'equilibrium'){
-  document.getElementById("chatText").textContent = "this is the market equilibrium. it is the point where the quantity demanded and quantity supplied are equal. this is the market price that all perfectly competitive markets regress to.";
-} else if (area === 'supLine'){
-  document.getElementById("chatText").textContent = "this is the supply line. it represents the quantity of a good (y) that producers are willing to produce at a given price (x). the slope of the line represents the price elasticity of supply which measures how sensitive the relationship between price and product produced is.";
-} else if (area === 'demLine'){
-  document.getElementById("chatText").textContent = "this is the demand line. it represents the quantity of a good (y) that consumers are willing to buy at a given price (x). the slope of the line represents the price elasticity of demand, which measures how sensitive the relationship between price and quantity demanded is.";
-} else if (area === 'taxRevenue'){
-document.getElementById("chatText").textContent = "this is the tax revenue. it represents the areas where consumer or producer satisfaction has been taken away by the government in the form of taxes. coordinates where consumers or producers formerly recieved consumer surplus or producer surplus are now just the same as the equilbrium 1 for 1 trade";
-} else if (area === 'dwl'){
-  document.getElementById("chatText").textContent = 'this is the area where consumers and producers who once recieved surplus are more worse off than the government is better off. in a sense, more value is lost than gained by tax, which is why this area is labeled deadweight loss.';
-} else if (area === 'supUnitTax'){
-  document.getElementById("chatText").textContent = "this is the supply line after the tax has been implemented. unit taxes (a set price on each quantity of product sold) are usually passed on to the consumer in the form of higher prices, as the cost of tax is tacked onto production costs.";
-} else {
 
-}
-
-document.getElementById("catModel").src = "assets/dinklyCatShrugging.gltf";
-catNoise.play();
-}
 function resetCatSpeak(){
   document.getElementById("chatText").textContent = "meow meow meow";
   document.getElementById("catModel").src = "assets/dinklyCat.gltf";
@@ -1070,12 +1046,16 @@ function submitClicked(){
   } else {
     unitTax = document.getElementById("taxInput").value;
     taxShown = true;
-    
+    if (firstTaxInput){
+      unitTaxInit();
+    } else {
+      whenTaxTrue();
+    }
   
   }
 }
 
-document.getElementById("taxSubmit").addEventListener("click", whenTaxTrue);
+document.getElementById("taxSubmit").addEventListener("click", submitClicked);
 
 
 
@@ -1088,11 +1068,12 @@ stage.draw();
 
 // SECTION functino that's originally run when tax is implemented
 
+function unitTaxInit(){
+//updating prod and cons labels
+updatingLabels();
 
-function whenTaxTrue(){
 
-  if (firstTaxInput){
-  submitClicked();
+
   //sup line tax!!!!!!
   supLineUnitTax = new Konva.Line({
     points: [supLine.points()[0], supLine.points()[1] - unitTax, supLine.points()[2], supLine.points()[3] - unitTax],
@@ -1140,29 +1121,29 @@ function whenTaxTrue(){
  taxRevenue = new Konva.Line({
   points: [0, puEquilbrium.y(), puEquilbrium.x(), puEquilbrium.y(), newPuEq.x(), newPuEq.y(), 0, newPuEq.y()],
   fill: 'pink',
-  opacity: 0.5,
   closed: true,
+  opacity: 0.5,
   });
 
 taxLayer.add(taxRevenue);
 
 //dwl
  dwl = new Konva.Line({
-  points: [taxRevenue.points[2], taxRevenue.points[3], equilibrium.x(), equilibrium.y(), taxRevenue.points[4], taxRevenue.points[5]],
+  points: [taxRevenue.points()[2], taxRevenue.points()[3], equilibrium.x(), equilibrium.y(), taxRevenue.points()[4], taxRevenue.points()[5]],
   fill: 'purple',
-  opacity: 0,
   closed: true,
+  opacity: 0.5,
 })
 taxLayer.add(dwl);
  taxLabel = new Konva.Text ({
   x: 0,
-  y: ((taxRevenue.points()[1] + taxRevenue.points()[3])/2),
+  y: taxRevenue.points()[3] - 30,
   text: 'tax revenue',
   fill: 'white',
   fontSize: 30,
-  opacity: 0,
 });
 taxLayer.add(taxLabel);
+taxLayer.add(dwl);
 
 
 
@@ -1173,11 +1154,10 @@ taxLayer.add(psuLabel);
 
  dwlLabel = new Konva.Text({
 x: dwl.points()[0],
-y: dwl.points()[4],
-text: 'DWL',
+y: dwl.points()[3],
+text: 'dwl',
 fill: 'white',
 fontSize: 15,
-opacity: 0
 });
 taxLayer.add(dwlLabel);
 
@@ -1185,6 +1165,13 @@ updateSupUnitTax();
 
 firstTaxInput = false;
 
+//updating cons and prod surplus
+
+consSurplus.points([0,0,demLine.points()[0], demLine.points()[1], newPuEq.x(), newPuEq.y(), 0, newPuEq.y()]);
+prodSurplus.points([0, stage.height(), supLine.points()[0], supLine.points()[1], puEquilbrium.x(), puEquilbrium.y(), 0, puEquilbrium.y()]);
+
+
+//////////////////////////////
 
 taxRevenue.on('mouseover', function () {
   catSpeak('taxRevenue');
@@ -1202,19 +1189,19 @@ dwl.on('mouseout', function () {
 resetCatSpeak();
 });
 
-  } else {
+  
+}
+
+
+
+
+function whenTaxTrue(){
     submitClicked();
     updateSupUnitTax();
     updateEverythingWPU();
 
-
-
-
   }
 
-
-
-}
 
 
 
@@ -1246,3 +1233,36 @@ supLineAnchorLeft.on('mouseout', function(){
 supLineAnchorRight.on('mouseout', function(){
   document.body.style.cursor = 'default';
 })
+
+
+
+
+
+
+
+
+function catSpeak(area){
+  
+  if (area === 'consSurplus'){
+    document.getElementById("chatText").textContent = "this is consumer surplus. the distance between the demand line and the equilibrium, the market price, represents how much the consumer is underpaying for the product in proportion to the happiness they recieve from it.";
+  } else if (area === 'prodSurplus'){
+    document.getElementById("chatText").textContent = "this is producer surplus. the distance between the supply line and the equilibrium, the market price, represents how much net profit the producer is making."
+  } else if (area === 'equilibrium'){
+    document.getElementById("chatText").textContent = "this is the market equilibrium. it is the point where the quantity demanded and quantity supplied are equal. this is the market price that all perfectly competitive markets regress to.";
+  } else if (area === 'supLine'){
+    document.getElementById("chatText").textContent = "this is the supply line. it represents the quantity of a good (y) that producers are willing to produce at a given price (x). the slope of the line represents the price elasticity of supply which measures how sensitive the relationship between price and product produced is.";
+  } else if (area === 'demLine'){
+    document.getElementById("chatText").textContent = "this is the demand line. it represents the quantity of a good (y) that consumers are willing to buy at a given price (x). the slope of the line represents the price elasticity of demand, which measures how sensitive the relationship between price and quantity demanded is.";
+  } else if (area === 'taxRevenue'){
+  document.getElementById("chatText").textContent = "this is the tax revenue. it represents the areas where consumer or producer satisfaction has been taken away by the government in the form of taxes. coordinates where consumers or producers formerly recieved consumer surplus or producer surplus are now just the same as the equilbrium 1 for 1 trade";
+  } else if (area === 'dwl'){
+    document.getElementById("chatText").textContent = 'this is the area where consumers and producers who once recieved surplus are more worse off than the government is better off. in a sense, more value is lost than gained by tax, which is why this area is labeled deadweight loss.';
+  } else if (area === 'supUnitTax'){
+    document.getElementById("chatText").textContent = "this is the supply line after the tax has been implemented. unit taxes (a set price on each quantity of product sold) are usually passed on to the consumer in the form of higher prices, as the cost of tax is tacked onto production costs.";
+  } else {
+  
+  }
+  
+  document.getElementById("catModel").src = "assets/dinklyCatShrugging.gltf";
+  catNoise.play();
+  }
