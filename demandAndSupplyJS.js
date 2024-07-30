@@ -562,10 +562,13 @@ function generatingShapesWhileLoop() {
 function updatingLabels(){
   
   csuLabel.y((consSurplus.points()[5] - csuLabel.fontSize()));
+  csuLabel.x(0);
   var y = prodSurplus.points()[5];
   psuLabel.y(y);
+  psuLabel.x(0);
   stage.draw();
-  console.log('raewn');
+ 
+
 
 };
 
@@ -645,21 +648,9 @@ taxLayer.batchDraw();
 
 
 
-
-taxLayer.batchDraw();
-
-
-
-
-
-
-taxLayer.batchDraw();
-
 function updateEverythingWPU(){
 //update sup tax line
 updateSupUnitTax();
-
-
 
 // tax revenue
 var taxRevPoints = [0, puEquilbrium.y(), puEquilbrium.x(), puEquilbrium.y(), newPuEq.x(), newPuEq.y(), 0, newPuEq.y()]
@@ -668,23 +659,16 @@ taxRevenue.points(taxRevPoints);
 // cons surplus
 updateProdSurplus();
 
-// prod surplus
-updateProdSurplus();
 // deadweight loss
 var dwlPoints = [puEquilbrium.x(), puEquilbrium.y(), equilibrium.x(), equilibrium.y(), newPuEq.x(), newPuEq.y()];
 
 dwl.points(dwlPoints);
 
 //labels
-taxLabel.opacity(1);
 taxLabel.y((taxRevenue.points()[1] + taxRevenue.points()[3])/2);
 
 
-csuLabel.opacity(1);
-csuLabel.y((consSurplus.points()[7] - csuLabel.fontSize()));
-
-psuLabel.opacity(1);
-psuLabel.y(prodSurplus.points()[3]);
+updatingLabels();
 
 dwlLabel.opacity(1);
 dwlLabel.x(dwl.points()[4]);
@@ -1071,6 +1055,7 @@ stage.draw();
 function unitTaxInit(){
 //updating prod and cons labels
 updatingLabels();
+stage.draw()
 
 
 
@@ -1107,7 +1092,6 @@ updatingLabels();
     radius: 10,
     fill: "#ABFF4F",
     x: newPuEq.x(),
-    //LMAOOOO WHATTTT THERE IS NO WAYYYY OHHH MY GOAADDDD 
     y: newPuEq.y() + squareWidth* (unitTax/squareWidth),
     opacity: 0.6,
   });
